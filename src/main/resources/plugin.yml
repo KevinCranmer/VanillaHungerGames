@@ -1,0 +1,19 @@
+name: Vanillahungergames
+version: ${project.version}
+main: me.crazycranberry.vanillahungergames.VanillaHungerGames
+api-version: 1.19
+authors: [CrazyCranberry]
+description: Vanilla hunger games where players must craft their own armor/weapons/food.
+commands:
+  createhungergames:
+    description: Start a hunger games tournament
+  joinhungergames:
+    description: Join the hunger games tournament
+  leavehungergames:
+    description: Abandon the hunger games match and return to the original world
+  class:
+    description: Set your class for the games
+  classInfo:
+    description: Get info about a certain class
+  classes:
+    description: Get a list of all classes
