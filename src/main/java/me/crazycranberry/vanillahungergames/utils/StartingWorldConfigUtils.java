@@ -2,6 +2,8 @@ package me.crazycranberry.vanillahungergames.utils;
 
 import me.crazycranberry.vanillahungergames.Participant;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.block.data.type.Bed;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -16,6 +18,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.Vector;
 
 import static me.crazycranberry.vanillahungergames.VanillaHungerGames.getPlugin;
 import static me.crazycranberry.vanillahungergames.managers.HungerGamesParticipantManager.getParticipant;
@@ -37,6 +40,7 @@ public class StartingWorldConfigUtils {
             p.removePotionEffect(hungerGamesPotionEffect.getType());
         }
         p.addPotionEffects((List<PotionEffect>) c.get("activePotionEffects"));
+        p.setBedSpawnLocation(findNearbyBed(c.getLocation("bedSpawnLocation")));
         Participant participant = getParticipant(p);
         if (participant != null && participant.getStartingWorldConfig() != null) {
             //If we still have the previous scoreboard from memory
@@ -44,11 +48,11 @@ public class StartingWorldConfigUtils {
         }
         List<Method> playerSetMethods = Arrays.stream(Player.class.getMethods()).filter(m -> m.getName().startsWith("set")).toList();
         for (Field field : Participant.ParticipantStartingWorldConfig.class.getDeclaredFields()) {
-            if (List.of("inventory", "location", "gameMode", "activePotionEffects", "scoreboard").contains(field.getName())) {
+            if (List.of("inventory", "location", "gameMode", "activePotionEffects", "scoreboard", "bedSpawnLocation").contains(field.getName())) {
                 continue;
             }
             Optional<Method> playerSetMethod = playerSetMethods.stream().filter(m -> setterMatch(field, m)).findFirst();
-            if (!playerSetMethod.isPresent()) {
+            if (playerSetMethod.isEmpty()) {
                 continue;
             }
             try {
@@ -69,6 +73,24 @@ public class StartingWorldConfigUtils {
         deleteStartingWorldConfig(p);
     }
 
+    private static Location findNearbyBed(Location maybeSpawn) {
+        if (maybeSpawn == null || maybeSpawn.getBlock().getBlockData() instanceof Bed) {
+            return maybeSpawn;
+        } else {
+            for (int i = -2; i < 3; i++) {
+                for (int j = -2; j < 3; j++) {
+                    for (int k = -2; k < 3; k++) {
+                        Location maybeBedLocation = maybeSpawn.clone().add(i, j, k);
+                        if (maybeBedLocation.getBlock().getBlockData() instanceof Bed) {
+                            return maybeBedLocation;
+                        }
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
     public static void saveStartingWorldConfig(Participant p) {
         Participant.ParticipantStartingWorldConfig config = p.getStartingWorldConfig();
         File f = configFile(p.getPlayer());
@@ -82,7 +104,7 @@ public class StartingWorldConfigUtils {
                 continue;
             }
             Optional<Method> configMethod = configMethods.stream().filter(m -> getterMatch(field, m)).findFirst();
-            if (!configMethod.isPresent()) {
+            if (configMethod.isEmpty()) {
                 continue;
             }
             try {

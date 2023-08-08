@@ -18,7 +18,9 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +47,13 @@ public class HungerGamesParticipantManager implements Listener {
             //Server crashed mid-tourney or they left during tourney lobby and they're startingWorldConfig still exists, gotta load it up for them
             System.out.println("[VanillaHungerGames] Tourney crash recovery initiated for " + event.getPlayer().getDisplayName());
             restoreStartingWorldConfig(event.getPlayer());
+        }
+    }
+
+    @EventHandler
+    public void onRespawn(PlayerRespawnEvent event) {
+        if (isTournamentParticipant(event.getPlayer()) && hungerGamesWorld() != null) {
+            event.setRespawnLocation(event.getPlayer().getLocation());
         }
     }
 

@@ -4,7 +4,10 @@ import me.crazycranberry.vanillahungergames.Participant;
 import me.crazycranberry.vanillahungergames.events.TournamentStartedEvent;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.entity.EntityDropItemEvent;
+import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -14,6 +17,8 @@ import static me.crazycranberry.vanillahungergames.managers.EnchantmentManager.g
 import static me.crazycranberry.vanillahungergames.managers.HungerGamesParticipantManager.tournamentParticipants;
 
 public class PersonalSpaceGuy implements PlayerClass {
+    private static final String PERSONAL_SPACE_LORE = "Get out of my personal space!";
+
     @Override
     public String getName() {
         return "PersonalSpaceGuy";
@@ -25,17 +30,31 @@ public class PersonalSpaceGuy implements PlayerClass {
     }
 
     @EventHandler
-    private void tournamentStarted(TournamentStartedEvent event) {
+    public void tournamentStarted(TournamentStartedEvent event) {
         for (Participant p : tournamentParticipants()) {
             if (isCorrectClass(p.getPlayer())) {
                 ItemStack knockbackStick = new ItemStack(Material.STICK, 1);
                 knockbackStick.addEnchantment(getEnchantmentObject("BigKnockBack"), 5);
-                knockbackStick.addEnchantment(Enchantment.VANISHING_CURSE, Enchantment.VANISHING_CURSE.getMaxLevel());
                 ItemMeta meta = knockbackStick.getItemMeta();
                 assert meta != null;
-                meta.setLore(List.of("Get out of my personal space!"));
+                meta.setLore(List.of(PERSONAL_SPACE_LORE));
                 knockbackStick.setItemMeta(meta);
                 p.getPlayer().getInventory().addItem(knockbackStick);
+            }
+        }
+    }
+
+    @EventHandler
+    //Only the PersonalSpaceGuy can demand his PersonalSpace
+    public void onStickPickup(EntityPickupItemEvent event) {
+        ItemStack itemStack = event.getItem().getItemStack();
+        if (itemStack.getEnchantments().containsKey(getEnchantmentObject("BigKnockBack")) && event.getEntity() instanceof Player && !isCorrectClass((Player) event.getEntity())) {
+            event.getItem().getItemStack().removeEnchantment(getEnchantmentObject("BigKnockBack"));
+        }
+        if (itemStack.getType().equals(Material.STICK) && event.getEntity() instanceof Player && isCorrectClass((Player) event.getEntity())) {
+            ItemMeta meta = itemStack.getItemMeta();
+            if (meta != null && meta.getLore() != null && meta.getLore().contains(PERSONAL_SPACE_LORE)) {
+                itemStack.addEnchantment(getEnchantmentObject("BigKnockBack"), 5);
             }
         }
     }

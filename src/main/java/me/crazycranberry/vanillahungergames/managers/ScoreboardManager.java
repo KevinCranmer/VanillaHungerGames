@@ -47,6 +47,7 @@ public class ScoreboardManager implements Listener {
     @EventHandler
     public void onParticipantJoin(ParticipantJoinTournamentEvent event) {
         event.getParticipant().getPlayer().setScoreboard(scoreboard());
+        updateScoreboard();
     }
 
     @EventHandler

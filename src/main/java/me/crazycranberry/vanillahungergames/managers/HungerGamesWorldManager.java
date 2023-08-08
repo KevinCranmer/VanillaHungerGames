@@ -17,6 +17,7 @@ import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginDisableEvent;
+import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.plugin.Plugin;
 
 import java.io.File;
@@ -49,8 +50,19 @@ public class HungerGamesWorldManager implements Listener {
     }
 
     @EventHandler
+    public void onPluginEnable(PluginEnableEvent event) {
+        if (event.getPlugin().equals(plugin) && hungerGamesWorld() != null) {
+            System.out.println("[VanillaHungerGames] Attempting to delete the hunger games world...");
+            Bukkit.getServer().unloadWorld(hungerGamesWorld(), true);
+            deleteRecursively(hungerGamesWorld().getWorldFolder());
+        }
+    }
+
+    @EventHandler
     public void onPluginDisable(PluginDisableEvent event) {
         if (event.getPlugin().equals(plugin) && hungerGamesWorld() != null) {
+            System.out.println("[VanillaHungerGames] Attempting to delete the hunger games world...");
+            Bukkit.getServer().unloadWorld(hungerGamesWorld(), true);
             deleteRecursively(hungerGamesWorld().getWorldFolder());
         }
     }
@@ -69,7 +81,7 @@ public class HungerGamesWorldManager implements Listener {
         border = Objects.requireNonNull(hungerGamesWorld).getWorldBorder();
         border.setCenter(spawnLoc());
         border.setSize(beginningBorderSize() * 2);
-        Bukkit.getServer().broadcastMessage(String.format("%sA hunger games tournament has started!! Type /joinhungergames to join the blood bath!%s", ChatColor.AQUA, ChatColor.RESET));
+        Bukkit.getServer().broadcastMessage(String.format("%sA hunger games tournament has started!! Type /hgjoin to join the blood bath!%s", ChatColor.AQUA, ChatColor.RESET));
     }
 
     @EventHandler
@@ -77,9 +89,7 @@ public class HungerGamesWorldManager implements Listener {
         System.out.println("[VanillaHungerGames] Attempting to delete the hunger games world...");
         Bukkit.getServer().unloadWorld(hungerGamesWorld(), true);
         File worldFolder = hungerGamesWorld().getWorldFolder();
-        if(!deleteRecursively(worldFolder)) {
-            Bukkit.getServer().broadcastMessage("The hunger games world didn't get deleted...");
-        }
+        deleteRecursively(worldFolder);
         hungerGamesWorld = null;
     }
 

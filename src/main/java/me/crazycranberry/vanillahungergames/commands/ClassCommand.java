@@ -29,7 +29,7 @@ public class ClassCommand implements CommandExecutor, TabCompleter {
                 return false;
             }
             Optional<PlayerClass> playerClass = possibleClasses().stream().filter(c -> c.getName().equalsIgnoreCase(args[0])).findFirst();
-            if (!playerClass.isEmpty()) {
+            if (playerClass.isEmpty()) {
                 p.sendMessage(String.format("%s is not a valid class name. Try /hgclasses to find available classes.", args[0]));
                 return false;
             }
