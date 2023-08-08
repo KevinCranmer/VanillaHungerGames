@@ -48,12 +48,12 @@ public final class VanillaHungerGames extends JavaPlugin implements Listener {
     }
 
     private void registerCommands() {
-        setCommandManager("createhungergames", new CreateHungerGamesCommand());
-        setCommandManager("joinhungergames", new JoinHungerGamesCommand());
-        setCommandManager("leavehungergames", new LeaveHungerGamesCommand());
-        setCommandManager("class", new ClassCommand());
-        setCommandManager("classInfo", new ClassInfoCommand());
-        setCommandManager("classes", new ClassesCommand());
+        setCommandManager("hgcreate", new CreateHungerGamesCommand());
+        setCommandManager("hgjoin", new JoinHungerGamesCommand());
+        setCommandManager("hgleave", new LeaveHungerGamesCommand());
+        setCommandManager("hgclass", new ClassCommand());
+        setCommandManager("hgclassInfo", new ClassInfoCommand());
+        setCommandManager("hgclasses", new ClassesCommand());
     }
 
     private void setCommandManager(String command, CommandExecutor commandManager) {

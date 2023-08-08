@@ -15,7 +15,7 @@ import static me.crazycranberry.vanillahungergames.managers.HungerGamesWorldMana
 public class LeaveHungerGamesCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (sender instanceof Player) {
+        if (sender instanceof Player && command.getName().equalsIgnoreCase("hgleave")) {
             Player p = (Player) sender;
             World hgWorld = hungerGamesWorld();
             if (hgWorld == null || !p.getWorld().equals(hgWorld)) {

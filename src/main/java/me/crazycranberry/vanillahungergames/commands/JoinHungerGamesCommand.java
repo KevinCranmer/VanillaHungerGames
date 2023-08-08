@@ -15,7 +15,7 @@ import static me.crazycranberry.vanillahungergames.managers.HungerGamesWorldMana
 public class JoinHungerGamesCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (sender instanceof Player && command.getName().equalsIgnoreCase("joinhungergames")) {
+        if (sender instanceof Player && command.getName().equalsIgnoreCase("hgjoin")) {
             Player p = (Player) sender;
             World hgWorld = hungerGamesWorld();
             if (hgWorld == null) {

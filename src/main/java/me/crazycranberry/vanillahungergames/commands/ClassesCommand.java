@@ -13,7 +13,7 @@ import static me.crazycranberry.vanillahungergames.managers.PlayerClassManager.p
 public class ClassesCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (sender instanceof Player && command.getName().equalsIgnoreCase("classes")) {
+        if (sender instanceof Player && command.getName().equalsIgnoreCase("hgclasses")) {
             Player p = (Player) sender;
             p.sendMessage(String.format("Available classes are: %s%s%s", ChatColor.GREEN, String.join(", ", possibleClasses().stream().map(PlayerClass::getName).toList()), ChatColor.RESET));
             return false;

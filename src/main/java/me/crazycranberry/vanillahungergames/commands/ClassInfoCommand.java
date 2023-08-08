@@ -18,15 +18,15 @@ import static me.crazycranberry.vanillahungergames.managers.PlayerClassManager.p
 public class ClassInfoCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (sender instanceof Player && command.getName().equalsIgnoreCase("classinfo")) {
+        if (sender instanceof Player && command.getName().equalsIgnoreCase("hgclassinfo")) {
             Player p = (Player) sender;
             if (args.length < 1) {
                 p.sendMessage("You must provide a class name (example: SNOWMAN)");
                 return false;
             }
             Optional<PlayerClass> playerClass = possibleClasses().stream().filter(c -> c.getName().equalsIgnoreCase(args[0])).findFirst();
-            if (!playerClass.isPresent()) {
-                p.sendMessage(String.format("%s is not a valid class name. Try /classes to find available classes.", args[0]));
+            if (playerClass.isEmpty()) {
+                p.sendMessage(String.format("%s is not a valid class name. Try /hgclasses to find available classes.", args[0]));
                 return false;
             }
             p.sendMessage(String.format("%s%s%s", ChatColor.GOLD, playerClass.get().getInfo(), ChatColor.RESET));
@@ -36,7 +36,7 @@ public class ClassInfoCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (sender instanceof Player && (command.getName().equalsIgnoreCase("class") || command.getName().equalsIgnoreCase("classinfo")) && args.length == 1) {
+        if (sender instanceof Player && (command.getName().equalsIgnoreCase("hgclass") || command.getName().equalsIgnoreCase("hgclassinfo")) && args.length == 1) {
             return possibleClasses().stream().map(PlayerClass::getName).filter(n -> n.toLowerCase().startsWith(args[0].toLowerCase())).toList();
         }
         return null;
