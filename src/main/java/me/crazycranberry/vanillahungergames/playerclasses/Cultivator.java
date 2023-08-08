@@ -48,8 +48,7 @@ public class Cultivator implements PlayerClass {
         if(isCorrectClass(event.getPlayer()) && plants.contains(event.getBlockPlaced().getType()) && event.getBlockPlaced().getWorld().equals(hungerGamesWorld())) {
             if (event.getBlockPlaced().getType().equals(Material.TORCHFLOWER_CROP)) {
                 event.getBlockPlaced().setType(Material.TORCHFLOWER);
-            }
-            else if (event.getBlockPlaced().getBlockData() instanceof Ageable) {
+            } else if (event.getBlockPlaced().getBlockData() instanceof Ageable) {
                 Ageable crop = (Ageable) event.getBlockPlaced().getBlockData();
                 crop.setAge(crop.getMaximumAge());
                 event.getBlockPlaced().setBlockData(crop);
