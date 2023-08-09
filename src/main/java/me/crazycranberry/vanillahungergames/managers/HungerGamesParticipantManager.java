@@ -20,7 +20,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.potion.PotionEffect;
-import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
