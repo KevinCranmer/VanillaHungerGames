@@ -24,7 +24,7 @@ import static me.crazycranberry.vanillahungergames.VanillaHungerGames.getPlugin;
 import static me.crazycranberry.vanillahungergames.managers.HungerGamesParticipantManager.tournamentParticipants;
 import static me.crazycranberry.vanillahungergames.managers.HungerGamesWorldManager.hungerGamesWorld;
 
-public class Trapper implements PlayerClass {
+public class Trapper extends PlayerClassWithRecurringTasks implements PlayerClass {
     private final int NUM_TRAPS = 24;
     Plugin plugin;
     List<Block> trapBlocks;
@@ -114,13 +114,13 @@ public class Trapper implements PlayerClass {
 
     private void checkForTrapsTriggering(Plugin plugin) {
         BukkitScheduler scheduler = Bukkit.getScheduler();
-        scheduler.runTaskTimer(plugin, () -> {
+        addTask(scheduler.runTaskTimer(plugin, () -> {
             for (Participant p : tournamentParticipants()) {
                 List<Block> closeTraps = getTrapBlocksNextToPlayer(p.getPlayer());
                 for (Block block : closeTraps) {
                     block.setType(Material.AIR);
                 }
             }
-        }, 0 /*<-- the initial delay */, 5L /*<-- the interval */);
+        }, 0 /*<-- the initial delay */, 5L /*<-- the interval */));
     }
 }

@@ -23,7 +23,7 @@ import static org.bukkit.entity.EnderDragon.Phase.CHARGE_PLAYER;
 import static org.bukkit.entity.EnderDragon.Phase.STRAFING;
 import static org.bukkit.entity.EnderDragon.Phase.SEARCH_FOR_BREATH_ATTACK_TARGET;
 
-public class Cultist implements PlayerClass {
+public class Cultist extends PlayerClassWithRecurringTasks implements PlayerClass {
     private static final int NUM_SACRIFICES = 30;
 
     private static final int WARNING_SACRIFICES = NUM_SACRIFICES * 5 / 6;
@@ -80,12 +80,12 @@ public class Cultist implements PlayerClass {
 
     private void updateEnderDragonPhase(Plugin plugin) {
         BukkitScheduler scheduler = Bukkit.getScheduler();
-        scheduler.runTaskTimer(plugin, () -> {
+        addTask(scheduler.runTaskTimer(plugin, () -> {
             Collection<EnderDragon> dragons = Objects.requireNonNull(hungerGamesWorld()).getEntitiesByClass(EnderDragon.class);
             for (EnderDragon dragon : dragons) {
                 int index = (int) (Math.random() * phases.size());
                 dragon.setPhase(phases.get(index));
             }
-        }, SEC_BEFORE_DRAGON_SWITCHES_PHASE /*<-- the initial delay */, 20L * SEC_BEFORE_DRAGON_SWITCHES_PHASE /*<-- the interval */);
+        }, SEC_BEFORE_DRAGON_SWITCHES_PHASE /*<-- the initial delay */, 20L * SEC_BEFORE_DRAGON_SWITCHES_PHASE /*<-- the interval */));
     }
 }

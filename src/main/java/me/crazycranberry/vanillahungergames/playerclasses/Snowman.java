@@ -20,7 +20,7 @@ import static me.crazycranberry.vanillahungergames.VanillaHungerGames.getPlugin;
 import static me.crazycranberry.vanillahungergames.managers.HungerGamesParticipantManager.tournamentParticipants;
 import static me.crazycranberry.vanillahungergames.managers.HungerGamesWorldManager.hungerGamesWorld;
 
-public class Snowman implements PlayerClass {
+public class Snowman extends PlayerClassWithRecurringTasks implements PlayerClass {
     Plugin plugin;
 
     public Snowman() {
@@ -64,7 +64,7 @@ public class Snowman implements PlayerClass {
 
     private void checkForSnowWalking(Plugin plugin) {
         BukkitScheduler scheduler = Bukkit.getScheduler();
-        scheduler.runTaskTimer(plugin, () -> {
+        addTask(scheduler.runTaskTimer(plugin, () -> {
             for (Participant p : tournamentParticipants()) {
                 Block blockUnderPlayer = p.getPlayer().getLocation().getBlock().getRelative(BlockFace.DOWN);
                 if (p.getPlayer().getWorld().equals(hungerGamesWorld()) &&
@@ -76,6 +76,6 @@ public class Snowman implements PlayerClass {
                     p.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20 * 3, 0));
                 }
             }
-        }, 0 /*<-- the initial delay */, 20L * 2L /*<-- the interval */);
+        }, 0 /*<-- the initial delay */, 20L * 2L /*<-- the interval */));
     }
 }
