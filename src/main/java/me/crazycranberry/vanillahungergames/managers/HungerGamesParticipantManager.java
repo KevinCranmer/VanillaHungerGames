@@ -24,10 +24,12 @@ import org.bukkit.potion.PotionEffect;
 import java.util.ArrayList;
 import java.util.List;
 
+import static me.crazycranberry.vanillahungergames.VanillaHungerGames.getPlugin;
 import static me.crazycranberry.vanillahungergames.customitems.HuntingCompass.pointCompassToNearestPlayer;
 import static me.crazycranberry.vanillahungergames.managers.HungerGamesManager.tournamentInProgress;
 import static me.crazycranberry.vanillahungergames.managers.HungerGamesWorldManager.hungerGamesWorld;
 import static me.crazycranberry.vanillahungergames.managers.HungerGamesWorldManager.spawnLoc;
+import static me.crazycranberry.vanillahungergames.utils.StartingWorldConfigUtils.configFile;
 import static me.crazycranberry.vanillahungergames.utils.StartingWorldConfigUtils.restoreStartingWorldConfig;
 import static me.crazycranberry.vanillahungergames.utils.StartingWorldConfigUtils.saveStartingWorldConfig;
 import static me.crazycranberry.vanillahungergames.utils.StartingWorldConfigUtils.startingWorldConfigExists;
@@ -53,6 +55,26 @@ public class HungerGamesParticipantManager implements Listener {
     public void onRespawn(PlayerRespawnEvent event) {
         if (isTournamentParticipant(event.getPlayer()) && hungerGamesWorld() != null) {
             event.setRespawnLocation(event.getPlayer().getLocation());
+        } else if (hungerGamesWorld() == null && configFile(event.getPlayer()).exists()){
+            //when a player doesn't respawn after dying in the hunger games and the tournament has already ended
+            restoreStartingWorldConfig(event.getPlayer());
+            //idk why it happens, but if we don't switch the game mode and switch back, the player bugs out and can't move.
+            //it has to do with the player trying to respawn in a world that doesn't exist, so we switch gamemodes 50ms after we've
+            //teleported them to the main world
+            new java.util.Timer().schedule(
+                    new java.util.TimerTask() {
+                        @Override
+                        public void run() {
+                            Bukkit.getServer().getScheduler().callSyncMethod(getPlugin(), () -> {
+                                GameMode gm = event.getPlayer().getGameMode();
+                                event.getPlayer().setGameMode(GameMode.values()[gm.ordinal() + 1 % GameMode.values().length]);
+                                event.getPlayer().setGameMode(gm);
+                                return true;
+                            });
+                        }
+                    },
+                    50
+            );
         }
     }
 
@@ -104,14 +126,18 @@ public class HungerGamesParticipantManager implements Listener {
     @EventHandler
     public void onTournamentCompleted(HungerGamesCompletedEvent event) {
         sendEveryoneHomeHappy();
-        tournamentParticipants = new ArrayList<>();
     }
 
     private void sendEveryoneHomeHappy() {
-        for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-            if (player.getWorld().equals(hungerGamesWorld())) {
-                restoreStartingWorldConfig(player);
+        for (Participant participant : tournamentParticipants()) {
+            if (!participant.getPlayer().isDead()) {
+                restoreStartingWorldConfig(participant.getPlayer());
+                tournamentParticipants.remove(participant);
             }
+        }
+        for (Participant participant : tournamentParticipants()) {
+            System.out.println("[VanillaHungerGames] Uh oh " + participant.getPlayer().getDisplayName() + " got stuck in the hunger games after it ended. We'll attempt to restore their config when they do respawn.");
+            tournamentParticipants.remove(participant);
         }
     }
 

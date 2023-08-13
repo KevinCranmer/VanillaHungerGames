@@ -10,6 +10,7 @@ import org.bukkit.block.data.Snowable;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
@@ -48,7 +49,7 @@ public class Snowman extends PlayerClassWithRecurringTasks implements PlayerClas
     @EventHandler
     private void snowballHit(EntityDamageByEntityEvent event) {
         if ("Snowman".equals(event.getDamager().getCustomName())) {
-            event.setDamage(1.0);
+            event.setDamage(1.5);
         }
     }
 
@@ -58,6 +59,17 @@ public class Snowman extends PlayerClassWithRecurringTasks implements PlayerClas
             Player shooter = (Player) event.getEntity().getShooter();
             if (isCorrectClass(shooter) && shooter.getWorld().equals(hungerGamesWorld())) {
                 event.getEntity().setCustomName("Snowman");
+            }
+        }
+    }
+
+    @EventHandler
+    private void onSuffocatingInSnow(EntityDamageEvent event) {
+        if (event.getEntity() instanceof Player && isCorrectClass((Player) event.getEntity())) {
+            Player player = (Player) event.getEntity();
+            if ((event.getCause().equals(EntityDamageEvent.DamageCause.SUFFOCATION) && hungerGamesWorld().getBlockAt(player.getEyeLocation()).getType().equals(Material.POWDER_SNOW))
+                || event.getCause().equals(EntityDamageEvent.DamageCause.FREEZE)) {
+                event.setCancelled(true);
             }
         }
     }

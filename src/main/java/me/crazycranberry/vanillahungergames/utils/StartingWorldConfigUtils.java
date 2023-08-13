@@ -135,7 +135,7 @@ public class StartingWorldConfigUtils {
         return method.getName().equalsIgnoreCase("set" + field.getName());
     }
 
-    private static File configFile(Player p) {
+    public static File configFile(Player p) {
         return new File(getPlugin().getDataFolder().getAbsolutePath() + File.separatorChar + CONFIG_FOLDER_NAME, p.getDisplayName() + ".yml");
     }
 

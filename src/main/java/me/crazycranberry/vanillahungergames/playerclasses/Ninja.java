@@ -36,9 +36,9 @@ public class Ninja implements PlayerClass {
     private final String DASH_ATTACK_TOOL_TIP_2 = "Damage is calculated based on the strongest weapon in your hotbar";
     private final String DOUBLE_JUMP_TOOL_TIP_1 = "Use this to Double Jump";
     private final String DOUBLE_JUMP_TOOL_TIP_2 = "This class also takes less fall damage";
-    private final int DOUBLE_JUMP_COOLDOWN_SECONDS = 30;
+    private final int DOUBLE_JUMP_COOLDOWN_SECONDS = 30; //kind of meaningless since it refreshes when they hit the ground
     private final int DASH_ATTACK_COOLDOWN_SECONDS = 15;
-    private final int DASH_ATTACK_DURATION_TICKS = 7;
+    private final int DASH_ATTACK_DURATION_TICKS = 6;
     private final double FALL_DAMAGE_CUSHION = 4;
     private final List<Integer> DASH_ATTACK_POTENTIAL_WEAPON_INDEXES = List.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 40);
     private final Map<Material, Double> WEAPON_DAMAGE = Map.ofEntries(
@@ -68,6 +68,7 @@ public class Ninja implements PlayerClass {
             Map.entry(Material.NETHERITE_SWORD, 8.0)
     );
     private static Map<Player, Integer> dashAttackTaskIdsByPlayer = new HashMap<>();
+    private static Map<Player, Location> dashAttackPreviousTickLocationForPlayer = new HashMap<>();
     private static Map<Player, Integer> dashAttackTicksRemainingByPlayer = new HashMap<>();
     private static Map<Player, List<LivingEntity>> dashAttackTargetsAlreadyHit = new HashMap<>();
 
@@ -114,7 +115,7 @@ public class Ninja implements PlayerClass {
             ItemMeta meta = item.getItemMeta();
             if (meta != null && meta.getLore() != null && meta.getLore().get(0).contains(DOUBLE_JUMP_TOOL_TIP_1)) {
                 player.setCooldown(Material.RABBIT_FOOT, 20 * DOUBLE_JUMP_COOLDOWN_SECONDS);
-                player.setVelocity(player.getVelocity().setX(player.getVelocity().getX() * 1.1).setY(0.55).setZ(player.getVelocity().getZ() * 1.1));
+                player.setVelocity(player.getVelocity().setX(player.getVelocity().getX() * 1.2).setY(0.5).setZ(player.getVelocity().getZ() * 1.2));
             }
         }
     }
@@ -124,7 +125,7 @@ public class Ninja implements PlayerClass {
             ItemMeta meta = item.getItemMeta();
             if (meta != null && meta.getLore() != null && meta.getLore().get(0).contains(DASH_ATTACK_TOOL_TIP_1)) {
                 player.setCooldown(Material.BLAZE_POWDER, 20 * DASH_ATTACK_COOLDOWN_SECONDS);
-                Vector velocity = player.getLocation().getDirection().multiply(2);
+                Vector velocity = player.getLocation().getDirection().multiply(2.2);
                 boolean playerWasAllowedFlight = player.getAllowFlight();
                 player.setAllowFlight(true);
                 player.setFlying(true);
@@ -135,6 +136,7 @@ public class Ninja implements PlayerClass {
                 double dashDamage = findStrongestWeaponDamage(player) / 2;
                 dashAttackTicksRemainingByPlayer.put(player, DASH_ATTACK_DURATION_TICKS);
                 dashAttackTargetsAlreadyHit.put(player, new ArrayList<>());
+                dashAttackPreviousTickLocationForPlayer.put(player, startingLocation);
                 BukkitScheduler scheduler = Bukkit.getScheduler();
                 int taskId = scheduler.runTaskTimer(getPlugin(), () -> {
                     Integer ticksRemaining = dashAttackTicksRemainingByPlayer.get(player);
@@ -150,7 +152,7 @@ public class Ninja implements PlayerClass {
                         .forEach(e -> {
                             if (e instanceof Player) {
                                 Player playerTarget = (Player) e;
-                                if (playerTarget.getInventory().getItemInOffHand().getType().equals(Material.SHIELD) && playerTarget.isHandRaised() && isFacingDashAttacker(playerTarget, startingLocation)) {
+                                if (playerTarget.getInventory().getItemInOffHand().getType().equals(Material.SHIELD) && playerTarget.isHandRaised() && isFacingDashAttacker(playerTarget, dashAttackPreviousTickLocationForPlayer.get(player))) {
                                     ItemStack shield = playerTarget.getInventory().getItemInOffHand();
                                     Damageable shieldMeta = (Damageable) shield.getItemMeta();
                                     if (shieldMeta != null) {
@@ -165,14 +167,15 @@ public class Ninja implements PlayerClass {
                             dashAttackTargetsAlreadyHit.get(player).add(e);
                         });
                     dashAttackTicksRemainingByPlayer.put(player, ticksRemaining - 1);
+                    dashAttackPreviousTickLocationForPlayer.put(player, player.getLocation());
                 }, 0 /*<-- the initial delay */, 1L /*<-- the interval */).getTaskId();
                 dashAttackTaskIdsByPlayer.put(player, taskId);
             }
         }
     }
 
-    private boolean isFacingDashAttacker(Player playerTarget, Location startingLocation) {
-        Vector locationDifference = startingLocation.toVector().clone().subtract(playerTarget.getLocation().toVector());
+    private boolean isFacingDashAttacker(Player playerTarget, Location attackerLocation) {
+        Vector locationDifference = attackerLocation.toVector().clone().subtract(playerTarget.getLocation().toVector());
         Vector targetDirection = playerTarget.getLocation().getDirection();
         locationDifference.normalize();
         Vector difference = locationDifference.subtract(targetDirection);
@@ -189,11 +192,6 @@ public class Ninja implements PlayerClass {
                     event.setCancelled(true);
                 }
                 event.setDamage(damage);
-                for (Entity e : player.getNearbyEntities(4, 4, 4)) {
-                    if (e instanceof LivingEntity) {
-                        ((LivingEntity)e).damage(damage);
-                    }
-                }
             }
         }
     }

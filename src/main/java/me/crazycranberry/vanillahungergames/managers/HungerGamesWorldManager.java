@@ -16,6 +16,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.plugin.Plugin;
@@ -57,6 +58,14 @@ public class HungerGamesWorldManager implements Listener {
             Bukkit.getServer().unloadWorld(hungerGamesWorld(), true);
             deleteRecursively(hungerGamesWorld().getWorldFolder());
             worldReady = false;
+        }
+    }
+
+    @EventHandler
+    public void onPortalEvent(PlayerPortalEvent event) {
+        if (event.getPlayer().getWorld().equals(hungerGamesWorld())) {
+            event.getPlayer().sendMessage(String.format("%sSorry mate, no other dimensions during the hunger games. Props to you for having the chance though!%s", ChatColor.GRAY, ChatColor.RESET));
+            event.setCancelled(true);
         }
     }
 

@@ -27,9 +27,9 @@ public class Stomper implements PlayerClass {
                 double damage = event.getDamage();
                 event.setDamage(0);
                 event.setCancelled(true);
-                for (Entity e : player.getNearbyEntities(4, 4, 4)) {
+                for (Entity e : player.getNearbyEntities(3.5, 3.5, 3.5)) {
                     if (e instanceof LivingEntity) {
-                        ((LivingEntity)e).damage(damage);
+                        ((LivingEntity)e).damage(damage, player);
                     }
                 }
             }

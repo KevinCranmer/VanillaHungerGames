@@ -16,7 +16,6 @@ public class PlayerClassWithRecurringTasks implements Listener {
     @EventHandler
     public void onTournamentCompleted(HungerGamesCompletedEvent event) {
         for (Integer i : taskIds) {
-            System.out.println("Canceling " + i);
             Bukkit.getServer().getScheduler().cancelTask(i);
         }
         taskIds = new ArrayList<>();
