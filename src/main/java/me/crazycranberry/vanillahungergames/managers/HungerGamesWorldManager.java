@@ -16,6 +16,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.plugin.Plugin;
@@ -33,6 +34,7 @@ public class HungerGamesWorldManager implements Listener {
     private static Location spawnLoc;
     private static WorldBorder border;
     private final Plugin plugin;
+    private static boolean worldReady = false;
 
     public HungerGamesWorldManager() {
         this.plugin = getPlugin();
@@ -43,7 +45,7 @@ public class HungerGamesWorldManager implements Listener {
     }
 
     public static World hungerGamesWorld() {
-        if (hungerGamesWorld == null && Bukkit.getServer().getWorld(HUNGER_GAMES_WORLD_NAME) != null) {
+        if (hungerGamesWorld == null && Bukkit.getWorld(HUNGER_GAMES_WORLD_NAME) != null) {
             hungerGamesWorld = Bukkit.getWorld(HUNGER_GAMES_WORLD_NAME);
         }
         return hungerGamesWorld;
@@ -55,6 +57,15 @@ public class HungerGamesWorldManager implements Listener {
             System.out.println("[VanillaHungerGames] Attempting to delete the hunger games world...");
             Bukkit.getServer().unloadWorld(hungerGamesWorld(), true);
             deleteRecursively(hungerGamesWorld().getWorldFolder());
+            worldReady = false;
+        }
+    }
+
+    @EventHandler
+    public void onPortalEvent(PlayerPortalEvent event) {
+        if (event.getPlayer().getWorld().equals(hungerGamesWorld())) {
+            event.getPlayer().sendMessage(String.format("%sSorry mate, no other dimensions during the hunger games. Props to you for having the chance though!%s", ChatColor.GRAY, ChatColor.RESET));
+            event.setCancelled(true);
         }
     }
 
@@ -64,6 +75,7 @@ public class HungerGamesWorldManager implements Listener {
             System.out.println("[VanillaHungerGames] Attempting to delete the hunger games world...");
             Bukkit.getServer().unloadWorld(hungerGamesWorld(), true);
             deleteRecursively(hungerGamesWorld().getWorldFolder());
+            worldReady = false;
         }
     }
 
@@ -72,6 +84,7 @@ public class HungerGamesWorldManager implements Listener {
         WorldCreator God = new WorldCreator(HUNGER_GAMES_WORLD_NAME);
         hungerGamesWorld = God.createWorld();
         hungerGamesWorld.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+        hungerGamesWorld.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
         Bukkit.getPluginManager().callEvent(new HungerGamesWorldCreatedEvent());
     }
 
@@ -82,6 +95,7 @@ public class HungerGamesWorldManager implements Listener {
         border.setCenter(spawnLoc());
         border.setSize(beginningBorderSize() * 2);
         Bukkit.getServer().broadcastMessage(String.format("%sA hunger games tournament has started!! Type /hgjoin to join the blood bath!%s", ChatColor.AQUA, ChatColor.RESET));
+        worldReady = true;
     }
 
     @EventHandler
@@ -90,6 +104,7 @@ public class HungerGamesWorldManager implements Listener {
         Bukkit.getServer().unloadWorld(hungerGamesWorld(), true);
         File worldFolder = hungerGamesWorld().getWorldFolder();
         deleteRecursively(worldFolder);
+        worldReady = false;
         hungerGamesWorld = null;
     }
 
@@ -104,6 +119,10 @@ public class HungerGamesWorldManager implements Listener {
                 e.remove();
             }
         }
+    }
+
+    public static boolean isWorldReady() {
+        return worldReady;
     }
 
     public static String borderBoundaries(float size) {

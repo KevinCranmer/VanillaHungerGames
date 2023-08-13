@@ -5,10 +5,13 @@ import me.crazycranberry.vanillahungergames.events.TournamentStartedEvent;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.MusicInstrument;
+import org.bukkit.Sound;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.MusicInstrumentMeta;
 import org.bukkit.potion.PotionEffect;
@@ -17,6 +20,7 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.List;
 
 import static me.crazycranberry.vanillahungergames.managers.HungerGamesParticipantManager.tournamentParticipants;
+import static me.crazycranberry.vanillahungergames.managers.HungerGamesWorldManager.hungerGamesWorld;
 
 public class Bard implements PlayerClass {
     private final int HORN_COOLDOWN_SECONDS = 17;
@@ -53,12 +57,15 @@ public class Bard implements PlayerClass {
     public void onGoatHornSound(PlayerInteractEvent event) {
         ItemStack item = event.getItem();
         Player player = event.getPlayer();
-        if (isCorrectClass(player) && item != null && item.getType() == Material.GOAT_HORN && !player.hasCooldown(Material.GOAT_HORN)) {
+        if (event.getPlayer().getWorld().equals(hungerGamesWorld()) && item != null && item.getType() == Material.GOAT_HORN && !player.hasCooldown(Material.GOAT_HORN)) {
             MusicInstrumentMeta meta = (MusicInstrumentMeta) item.getItemMeta();
             if (meta != null && meta.getInstrument() != null) {
                 MusicInstrument horn = meta.getInstrument();
-                player.setCooldown(Material.GOAT_HORN, 20 * HORN_COOLDOWN_SECONDS);
-                applyBardEffect(player, horn.getKey().getKey());
+                hungerGamesWorld().playSound(player.getLocation(), hornSound(horn.getKey().getKey()), 1, 1);
+                if (isCorrectClass(player)) {
+                    player.setCooldown(Material.GOAT_HORN, 20 * HORN_COOLDOWN_SECONDS);
+                    applyBardEffect(player, horn.getKey().getKey());
+                }
             }
         }
     }
@@ -82,13 +89,28 @@ public class Bard implements PlayerClass {
         }
     }
 
+    private Sound hornSound(String hornType) {
+        switch(hornType) {
+            case "ponder_goat_horn":
+                return Sound.ITEM_GOAT_HORN_SOUND_0;
+            case "sing_goat_horn":
+                return Sound.ITEM_GOAT_HORN_SOUND_1;
+            case "yearn_goat_horn":
+                return Sound.ITEM_GOAT_HORN_SOUND_6;
+            case "dream_goat_horn":
+                return Sound.ITEM_GOAT_HORN_SOUND_7;
+            default:
+                return Sound.ITEM_GOAT_HORN_PLAY;
+        }
+    }
+
     private void applyBardEffect(Player bard, String hornType) {
         switch (hornType) {
             case "ponder_goat_horn":
                 bard.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 20 * HORN_BUFF_DURATION_SECONDS, 1));
                 break;
             case "sing_goat_horn":
-                bard.setHealth(Math.min(bard.getHealth() + 1, bard.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
+                bard.setHealth(Math.min(bard.getHealth() + 1.5, bard.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
                 break;
             case "yearn_goat_horn":
                 bard.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 20 * HORN_BUFF_DURATION_SECONDS, 1));

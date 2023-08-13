@@ -10,6 +10,7 @@ import org.bukkit.block.data.Snowable;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
@@ -20,7 +21,7 @@ import static me.crazycranberry.vanillahungergames.VanillaHungerGames.getPlugin;
 import static me.crazycranberry.vanillahungergames.managers.HungerGamesParticipantManager.tournamentParticipants;
 import static me.crazycranberry.vanillahungergames.managers.HungerGamesWorldManager.hungerGamesWorld;
 
-public class Snowman implements PlayerClass {
+public class Snowman extends PlayerClassWithRecurringTasks implements PlayerClass {
     Plugin plugin;
 
     public Snowman() {
@@ -48,7 +49,7 @@ public class Snowman implements PlayerClass {
     @EventHandler
     private void snowballHit(EntityDamageByEntityEvent event) {
         if ("Snowman".equals(event.getDamager().getCustomName())) {
-            event.setDamage(1.0);
+            event.setDamage(1.5);
         }
     }
 
@@ -62,9 +63,20 @@ public class Snowman implements PlayerClass {
         }
     }
 
+    @EventHandler
+    private void onSuffocatingInSnow(EntityDamageEvent event) {
+        if (event.getEntity() instanceof Player && isCorrectClass((Player) event.getEntity())) {
+            Player player = (Player) event.getEntity();
+            if ((event.getCause().equals(EntityDamageEvent.DamageCause.SUFFOCATION) && hungerGamesWorld().getBlockAt(player.getEyeLocation()).getType().equals(Material.POWDER_SNOW))
+                || event.getCause().equals(EntityDamageEvent.DamageCause.FREEZE)) {
+                event.setCancelled(true);
+            }
+        }
+    }
+
     private void checkForSnowWalking(Plugin plugin) {
         BukkitScheduler scheduler = Bukkit.getScheduler();
-        scheduler.runTaskTimer(plugin, () -> {
+        addTask(scheduler.runTaskTimer(plugin, () -> {
             for (Participant p : tournamentParticipants()) {
                 Block blockUnderPlayer = p.getPlayer().getLocation().getBlock().getRelative(BlockFace.DOWN);
                 if (p.getPlayer().getWorld().equals(hungerGamesWorld()) &&
@@ -76,6 +88,6 @@ public class Snowman implements PlayerClass {
                     p.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20 * 3, 0));
                 }
             }
-        }, 0 /*<-- the initial delay */, 20L * 2L /*<-- the interval */);
+        }, 0 /*<-- the initial delay */, 20L * 2L /*<-- the interval */));
     }
 }

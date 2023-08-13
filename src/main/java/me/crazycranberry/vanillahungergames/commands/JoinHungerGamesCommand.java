@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import static me.crazycranberry.vanillahungergames.managers.HungerGamesWorldManager.hungerGamesWorld;
+import static me.crazycranberry.vanillahungergames.managers.HungerGamesWorldManager.isWorldReady;
 
 public class JoinHungerGamesCommand implements CommandExecutor {
     @Override
@@ -18,7 +19,7 @@ public class JoinHungerGamesCommand implements CommandExecutor {
         if (sender instanceof Player && command.getName().equalsIgnoreCase("hgjoin")) {
             Player p = (Player) sender;
             World hgWorld = hungerGamesWorld();
-            if (hgWorld == null) {
+            if (hgWorld == null || !isWorldReady()) {
                 p.sendMessage("There is not a hunger games tournament happening at the moment.");
             } else if (p.getWorld().equals(hgWorld)) {
                 p.sendMessage("You're already in the hunger games tournament, you silly goose.");
