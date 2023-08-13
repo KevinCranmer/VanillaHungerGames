@@ -57,7 +57,7 @@ public class Bard implements PlayerClass {
     public void onGoatHornSound(PlayerInteractEvent event) {
         ItemStack item = event.getItem();
         Player player = event.getPlayer();
-        if (item != null && item.getType() == Material.GOAT_HORN && !player.hasCooldown(Material.GOAT_HORN)) {
+        if (event.getPlayer().getWorld().equals(hungerGamesWorld()) && item != null && item.getType() == Material.GOAT_HORN && !player.hasCooldown(Material.GOAT_HORN)) {
             MusicInstrumentMeta meta = (MusicInstrumentMeta) item.getItemMeta();
             if (meta != null && meta.getInstrument() != null) {
                 MusicInstrument horn = meta.getInstrument();
