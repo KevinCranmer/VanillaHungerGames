@@ -3,6 +3,7 @@ package me.crazycranberry.vanillahungergames.playerclasses;
 import me.crazycranberry.vanillahungergames.Participant;
 import me.crazycranberry.vanillahungergames.events.TournamentStartedEvent;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -116,9 +117,11 @@ public class Trapper extends PlayerClassWithRecurringTasks implements PlayerClas
         BukkitScheduler scheduler = Bukkit.getScheduler();
         addTask(scheduler.runTaskTimer(plugin, () -> {
             for (Participant p : tournamentParticipants()) {
-                List<Block> closeTraps = getTrapBlocksNextToPlayer(p.getPlayer());
-                for (Block block : closeTraps) {
-                    block.setType(Material.AIR);
+                if (p.getPlayer().getGameMode().equals(GameMode.SURVIVAL)) {
+                    List<Block> closeTraps = getTrapBlocksNextToPlayer(p.getPlayer());
+                    for (Block block : closeTraps) {
+                        block.setType(Material.AIR);
+                    }
                 }
             }
         }, 0 /*<-- the initial delay */, 5L /*<-- the interval */));

@@ -147,9 +147,10 @@ public class Ninja implements PlayerClass {
                         player.setAllowFlight(playerWasAllowedFlight);
                         Bukkit.getServer().getScheduler().cancelTask(expiredTasksId);
                     }
-                    Stream<LivingEntity> collidedEntities = player.getNearbyEntities(0.75, 0.75, 0.75).stream().filter(e -> e instanceof LivingEntity).map(e -> (LivingEntity) e);
+                    Stream<LivingEntity> collidedEntities = player.getNearbyEntities(0.9, 0.9, 0.9).stream().filter(e -> e instanceof LivingEntity).map(e -> (LivingEntity) e);
                     collidedEntities.filter(e -> !dashAttackTargetsAlreadyHit.get(player).contains(e))
                         .forEach(e -> {
+                            boolean blocked = false;
                             if (e instanceof Player) {
                                 Player playerTarget = (Player) e;
                                 if (playerTarget.getInventory().getItemInOffHand().getType().equals(Material.SHIELD) && playerTarget.isHandRaised() && isFacingDashAttacker(playerTarget, dashAttackPreviousTickLocationForPlayer.get(player))) {
@@ -160,9 +161,11 @@ public class Ninja implements PlayerClass {
                                         shield.setItemMeta(shieldMeta);
                                         hungerGamesWorld().playSound(playerTarget.getLocation(), ITEM_SHIELD_BLOCK, 1, 1);
                                     }
-                                } else {
-                                    e.damage(dashDamage, player);
+                                    blocked = true;
                                 }
+                            }
+                            if (!blocked) {
+                                e.damage(dashDamage, player);
                             }
                             dashAttackTargetsAlreadyHit.get(player).add(e);
                         });

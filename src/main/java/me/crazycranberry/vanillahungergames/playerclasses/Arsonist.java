@@ -2,8 +2,8 @@ package me.crazycranberry.vanillahungergames.playerclasses;
 
 import me.crazycranberry.vanillahungergames.Participant;
 import me.crazycranberry.vanillahungergames.events.TournamentStartedEvent;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.MusicInstrument;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
@@ -12,14 +12,15 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.MusicInstrumentMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.List;
 import java.util.Objects;
 
 import static me.crazycranberry.vanillahungergames.managers.HungerGamesParticipantManager.tournamentParticipants;
 
 public class Arsonist implements PlayerClass {
-    private int INSTA_TNT_DURATION_SECONDS = 20;
+    private static final int INSTA_TNT_DURATION_SECONDS = 20;
 
     @Override
     public String getName() {
@@ -35,7 +36,11 @@ public class Arsonist implements PlayerClass {
     private void tournamentStarted(TournamentStartedEvent event) {
         for (Participant p : tournamentParticipants()) {
             if (isCorrectClass(p.getPlayer())) {
-                p.getPlayer().getInventory().addItem(new ItemStack(Material.BLAZE_POWDER, 1));
+                ItemStack blazePowder = new ItemStack(Material.BLAZE_POWDER, 1);
+                ItemMeta meta = blazePowder.getItemMeta();
+                meta.setLore(List.of(String.format("%sWhile this item is on cooldown,%s", ChatColor.GOLD, ChatColor.RESET), String.format("%sTNT ignites as soon as its placed!%s", ChatColor.GOLD, ChatColor.RESET)));
+                blazePowder.setItemMeta(meta);
+                p.getPlayer().getInventory().addItem(blazePowder);
             }
         }
     }

@@ -25,6 +25,15 @@ public class HuntingCompass {
         return huntingCompass;
     }
 
+    private static double distanceSquared(Location loc1, Location loc2) {
+        //intentionally don't want to factor in Y for distance calc
+        double x1 = loc1.getX();
+        double z1 = loc1.getZ();
+        double x2 = loc2.getX();
+        double z2 = loc2.getZ();
+        return Math.pow(x1 - x2, 2) +  Math.pow(z1 - z2, 2);
+    }
+
     public static void pointCompassToNearestPlayer(ItemStack compass, Player compassHolder) {
         if (tournamentParticipants().size() == 0) {
             return;
@@ -33,13 +42,12 @@ public class HuntingCompass {
         }
         CompassMeta compassMeta = (CompassMeta) compass.getItemMeta();
         Location startingLoc = compassHolder.getLocation();
-        Location closestLocation = tournamentParticipants().get(0).getPlayer().getLocation();
+        Location closestLocation = tournamentParticipants().get(0).getPlayer().equals(compassHolder) ? tournamentParticipants().get(1).getPlayer().getLocation() : tournamentParticipants().get(0).getPlayer().getLocation();
         for (Participant p : tournamentParticipants()) {
             if (p.getPlayer().getGameMode() == GameMode.SURVIVAL && !p.getPlayer().getDisplayName().equals(compassHolder.getDisplayName())) {
                 Location playerLoc = p.getPlayer().getLocation();
-                playerLoc.setY(startingLoc.getY()); //don't want to factor in Y for distance calc
-                double distance = startingLoc.distanceSquared(playerLoc);
-                if (distance < startingLoc.distanceSquared(closestLocation)) {
+                double distanceSquared = distanceSquared(playerLoc, startingLoc);
+                if (distanceSquared < distanceSquared(startingLoc, closestLocation)) {
                     closestLocation = playerLoc;
                 }
             }

@@ -1,5 +1,6 @@
 package me.crazycranberry.vanillahungergames.customenchantments;
 
+import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentTarget;
@@ -27,8 +28,10 @@ public class BigKnockBack extends Enchantment implements Listener {
             if (damager.getInventory().getItemInMainHand().getEnchantments().containsKey(Enchantment.getByKey(new NamespacedKey(getPlugin(), "bigknockback")))) {
                 int enchantmentLevel = damager.getInventory().getItemInMainHand().getEnchantments().get(getEnchantmentObject("BigKnockBack"));
                 Vector knockBackVector = damager.getLocation().getDirection().multiply(enchantmentLevel);
-                if (knockBackVector.getY() < 2) {
-                    knockBackVector.setY(2);
+                if (knockBackVector.getY() < enchantmentLevel * 0.4) {
+                    knockBackVector.setY(enchantmentLevel * 0.4);
+                } else if (knockBackVector.getY() > enchantmentLevel * 0.8) {
+                    knockBackVector.setY(enchantmentLevel * 0.8);
                 }
                 event.getEntity().setVelocity(knockBackVector);
             }
