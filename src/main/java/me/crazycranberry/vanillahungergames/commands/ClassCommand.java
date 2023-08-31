@@ -24,21 +24,27 @@ public class ClassCommand implements CommandExecutor, TabCompleter {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (sender instanceof Player && command.getName().equalsIgnoreCase("hgclass")) {
             Player p = (Player) sender;
-            if (args.length < 1) {
-                p.sendMessage("You must provide a class name (example: SNOWMAN)");
-                return false;
-            }
-            Optional<PlayerClass> playerClass = possibleClasses().stream().filter(c -> c.getName().equalsIgnoreCase(args[0])).findFirst();
-            if (playerClass.isEmpty()) {
-                p.sendMessage(String.format("%s is not a valid class name. Try /hgclasses to find available classes.", args[0]));
-                return false;
-            }
             if (!p.getWorld().equals(hungerGamesWorld()) || !isTournamentParticipant(p)) {
                 p.sendMessage("Bro, you're not in the hunger games tournament. You can't change class right now... smh.");
                 return false;
             }
+            if (args.length < 1) {
+                if (getParticipant(p).getPlayerClass() == null) {
+                    p.sendMessage("You have not selected a class yet. Type /hgclass <class_name> to select a class.");
+                } else if (tournamentInProgress()) {
+                    p.sendMessage(String.format("You are currently: %s%s%s.", ChatColor.GREEN, getParticipant(p).getPlayerClass().getName(), ChatColor.RESET));
+                } else {
+                    p.sendMessage(String.format("You are currently: %s%s%s. Type /hgclass <class_name> to select a class.", ChatColor.GREEN, getParticipant(p).getPlayerClass().getName(), ChatColor.RESET));
+                }
+                return false;
+            }
             if (tournamentInProgress()) {
                 p.sendMessage("You cannot change classes now, the tournament has already started.");
+                return false;
+            }
+            Optional<PlayerClass> playerClass = possibleClasses().stream().filter(c -> c.getName().equalsIgnoreCase(args[0]) || c.getName().toLowerCase().startsWith(args[0].toLowerCase())).findFirst();
+            if (playerClass.isEmpty()) {
+                p.sendMessage(String.format("%s is not a valid class name. Try /hgclasses to find available classes.", args[0]));
                 return false;
             }
             getParticipant(p).setPlayerClass(playerClass.get());

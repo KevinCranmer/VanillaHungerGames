@@ -2,7 +2,9 @@ package me.crazycranberry.vanillahungergames.playerclasses;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.EnderDragon;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -59,7 +61,9 @@ public class Cultist extends PlayerClassWithRecurringTasks implements PlayerClas
         if (event.getEntity().getKiller() != null && isCorrectClass(event.getEntity().getKiller())) {
             Player cultist = event.getEntity().getKiller();
             cultists.put(cultist.getDisplayName(), cultists.getOrDefault(cultist.getDisplayName(), 0) + 1);
-            cultist.sendMessage(String.format("%s%s/%s sacrifices%s", ChatColor.RED, cultists.get(cultist.getDisplayName()), NUM_SACRIFICES, ChatColor.RESET));
+            if (cultists.getOrDefault(cultist.getDisplayName(), 0) < NUM_SACRIFICES) {
+                cultist.sendMessage(String.format("%s%s/%s sacrifices%s", ChatColor.RED, cultists.get(cultist.getDisplayName()), NUM_SACRIFICES, ChatColor.RESET));
+            }
             if (cultists.get(cultist.getDisplayName()) == WARNING_SACRIFICES) {
                 broadcastToHungerGamesParticipants(String.format("%sA cultist is dangerously close to completing their ritual%s", ChatColor.RED, ChatColor.RESET));
             }
@@ -70,7 +74,17 @@ public class Cultist extends PlayerClassWithRecurringTasks implements PlayerClas
                     dragon.setPhase(phases.get(0));
                     cultist.sendMessage(String.format("%sYour ritual was successful and you've summoned an %sEnder Dragon.%s", ChatColor.LIGHT_PURPLE, ChatColor.DARK_PURPLE, ChatColor.RESET));
                 } else {
-                    hungerGamesWorld().spawnEntity(hungerGamesWorld().getSpawnLocation(), EntityType.WITHER);
+                    Entity wither = hungerGamesWorld().spawnEntity(hungerGamesWorld().getSpawnLocation(), EntityType.WITHER);
+                    int x = (int) wither.getLocation().getX();
+                    int y = (int) wither.getLocation().getY();
+                    int z = (int) wither.getLocation().getZ();
+                    for (int i = -3; i < 4; i++) {
+                        for (int j = -3; j < 4; j++) {
+                            for (int k = -3; k < 4; k++) {
+                                hungerGamesWorld().getBlockAt(x + i, y + j, z + k).setType(Material.AIR);
+                            }
+                        }
+                    }
                     cultist.sendMessage(String.format("%sYour ritual was successful and you've summoned a %sWither.%s", ChatColor.LIGHT_PURPLE, ChatColor.DARK_PURPLE, ChatColor.RESET));
                 }
                 broadcastToHungerGamesParticipants(String.format("%sA Cultist has completed their ritual. May God have mercy on our souls...%s", ChatColor.RED, ChatColor.RESET));

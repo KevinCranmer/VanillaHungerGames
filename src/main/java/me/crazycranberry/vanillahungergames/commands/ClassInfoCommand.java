@@ -24,7 +24,7 @@ public class ClassInfoCommand implements CommandExecutor, TabCompleter {
                 p.sendMessage("You must provide a class name (example: SNOWMAN)");
                 return false;
             }
-            Optional<PlayerClass> playerClass = possibleClasses().stream().filter(c -> c.getName().equalsIgnoreCase(args[0])).findFirst();
+            Optional<PlayerClass> playerClass = possibleClasses().stream().filter(c -> c.getName().equalsIgnoreCase(args[0]) || c.getName().toLowerCase().startsWith(args[0].toLowerCase())).findFirst();
             if (playerClass.isEmpty()) {
                 p.sendMessage(String.format("%s is not a valid class name. Try /hgclasses to find available classes.", args[0]));
                 return false;

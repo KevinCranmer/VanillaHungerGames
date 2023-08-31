@@ -8,6 +8,7 @@ import me.crazycranberry.vanillahungergames.events.ParticipantJoinTournamentEven
 import me.crazycranberry.vanillahungergames.events.ParticipantLeaveTournamentEvent;
 import me.crazycranberry.vanillahungergames.events.TournamentStartedEvent;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -29,6 +30,7 @@ import static me.crazycranberry.vanillahungergames.customitems.HuntingCompass.po
 import static me.crazycranberry.vanillahungergames.managers.HungerGamesManager.tournamentInProgress;
 import static me.crazycranberry.vanillahungergames.managers.HungerGamesWorldManager.hungerGamesWorld;
 import static me.crazycranberry.vanillahungergames.managers.HungerGamesWorldManager.spawnLoc;
+import static me.crazycranberry.vanillahungergames.managers.PlayerClassManager.possibleClasses;
 import static me.crazycranberry.vanillahungergames.utils.StartingWorldConfigUtils.configFile;
 import static me.crazycranberry.vanillahungergames.utils.StartingWorldConfigUtils.restoreStartingWorldConfig;
 import static me.crazycranberry.vanillahungergames.utils.StartingWorldConfigUtils.saveStartingWorldConfig;
@@ -43,6 +45,9 @@ public class HungerGamesParticipantManager implements Listener {
         if (tournamentInProgress() && isTournamentParticipant(event.getPlayer())) {
             //if they dc'd while in a tournament, sucks to suck but put them in spectator (no combat logging)
             event.getPlayer().setGameMode(GameMode.SPECTATOR);
+            event.getPlayer().teleport(hungerGamesWorld().getSpawnLocation());
+        } else if (isTournamentParticipant(event.getPlayer())) {
+            //if they dc'd while in the lobby, bring them back to starting point
             event.getPlayer().teleport(hungerGamesWorld().getSpawnLocation());
         } else if (startingWorldConfigExists(event.getPlayer())) {
             //Server crashed mid-tourney or they left during tourney lobby and they're startingWorldConfig still exists, gotta load it up for them
@@ -113,6 +118,11 @@ public class HungerGamesParticipantManager implements Listener {
             player.getInventory().clear();
             player.teleport(spawnLoc());
             player.getInventory().setItem(8, HuntingCompass.getHuntingCompass());
+            if (p.getPlayerClass() == null) {
+                int randomClassIndex = (int) (Math.random() * possibleClasses().size());
+                p.setPlayerClass(possibleClasses().get(randomClassIndex));
+                p.getPlayer().sendMessage(String.format("You never selected a class, so now you've been randomly assigned a class. You got: %s%s%s", ChatColor.GREEN, p.getPlayerClass().getName(), ChatColor.RESET));
+            }
         }
     }
 

@@ -42,6 +42,7 @@ public class ScoreboardManager implements Listener {
             scoreboard().resetScores(entry);
         }
         scoreboard().clearSlot(DisplaySlot.SIDEBAR);
+        scoreboard = null;
     }
 
     @EventHandler
@@ -73,25 +74,17 @@ public class ScoreboardManager implements Listener {
     private Scoreboard scoreboard() {
         if (scoreboard == null) {
             scoreboard = Objects.requireNonNull(Bukkit.getScoreboardManager()).getNewScoreboard();
-            Objective objective = objective();
+            Objective objective = scoreboard().registerNewObjective("Players", Criteria.DUMMY, "Players");
             objective.setDisplayName("Players");
             objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+            updateScoreboard();
         }
         return scoreboard;
     }
 
-    private Objective objective() {
-        Objective objective = scoreboard().getObjective("Players");
-        if (objective == null) {
-            objective = scoreboard().registerNewObjective("Players", Criteria.DUMMY, "Players");
-            updateScoreboard();
-        }
-        return objective;
-    }
-
     private void updateScoreboard() {
         int alivePlayers = numAlivePlayers();
-        Objective objective = objective();
+        Objective objective = scoreboard().getObjective("Players");
         objective.getScore("Alive").setScore(alivePlayers);
         objective.getScore("Spectating").setScore(tournamentParticipants().size() - alivePlayers);
         if (tournamentInProgress() && alivePlayers == 1) {
