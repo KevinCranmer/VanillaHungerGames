@@ -39,6 +39,7 @@ public class HuntingCompass {
             return;
         } else if (tournamentParticipants().size() == 1) {
             compassHolder.sendMessage(String.format("%sYou've already won. There is no one else to look for.%s", ChatColor.GRAY, ChatColor.RESET));
+            return;
         }
         CompassMeta compassMeta = (CompassMeta) compass.getItemMeta();
         Location startingLoc = compassHolder.getLocation();

@@ -7,9 +7,11 @@ import me.crazycranberry.vanillahungergames.HungerGamesEventList;
 import me.crazycranberry.vanillahungergames.events.HungerGamesWorldCreatedEvent;
 import me.crazycranberry.vanillahungergames.events.ParticipantJoinTournamentEvent;
 import me.crazycranberry.vanillahungergames.events.ParticipantWonTournamentEvent;
+import me.crazycranberry.vanillahungergames.events.TournamentEmptiedEvent;
 import me.crazycranberry.vanillahungergames.events.TournamentStartedEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -17,6 +19,8 @@ import java.util.List;
 
 import static me.crazycranberry.vanillahungergames.VanillaHungerGames.getPlugin;
 import static me.crazycranberry.vanillahungergames.managers.HungerGamesParticipantManager.tournamentParticipants;
+import static org.bukkit.Bukkit.dispatchCommand;
+import static org.bukkit.Bukkit.getServer;
 
 public class HungerGamesManager implements Listener {
     private static List<HungerGamesEvent> events;
@@ -24,6 +28,7 @@ public class HungerGamesManager implements Listener {
     private static boolean playerHasJoined = false;
     private static boolean tournamentEnded = false;
     private static boolean tournamentInProgress = false;
+    private static Player winner;
 
     @EventHandler
     void onHungerGamesEvent(HungerGamesEvent event) {
@@ -42,7 +47,7 @@ public class HungerGamesManager implements Listener {
                 new java.util.TimerTask() {
                     @Override
                     public void run() {
-                        Bukkit.getServer().getScheduler().callSyncMethod(getPlugin(), () -> {
+                        getServer().getScheduler().callSyncMethod(getPlugin(), () -> {
                             Bukkit.getPluginManager().callEvent(events().get(eventIndex++));
                             return true;
                         });
@@ -60,6 +65,12 @@ public class HungerGamesManager implements Listener {
         tournamentInProgress = false;
     }
 
+    @EventHandler
+    void onTournamentEmptied(TournamentEmptiedEvent event) {
+        runCommandsToRunAfterMatch();
+        winner = null;
+    }
+
     public static boolean hasSomeoneWonTournament() {
         return tournamentEnded;
     }
@@ -68,12 +79,13 @@ public class HungerGamesManager implements Listener {
     void onVictoryRoyale(ParticipantWonTournamentEvent event) {
         tournamentEnded = true;
         if (event.getParticipant() != null) {
-            Bukkit.getServer().broadcastMessage(String.format("%sCongratulations to %s for winning the hunger games!%s", ChatColor.LIGHT_PURPLE, event.getParticipant().getPlayer().getDisplayName(), ChatColor.RESET));
+            winner = event.getParticipant().getPlayer();
+            getServer().broadcastMessage(String.format("%sCongratulations to %s for winning the hunger games!%s", ChatColor.LIGHT_PURPLE, winner.getDisplayName(), ChatColor.RESET));
             new java.util.Timer().schedule(
                     new java.util.TimerTask() {
                         @Override
                         public void run() {
-                            Bukkit.getServer().getScheduler().callSyncMethod(getPlugin(), () -> {
+                            getServer().getScheduler().callSyncMethod(getPlugin(), () -> {
                                 Bukkit.getPluginManager().callEvent(new HungerGamesCompletedEvent());
                                 return true;
                             });
@@ -81,6 +93,19 @@ public class HungerGamesManager implements Listener {
                     },
                     30000
             );
+        }
+    }
+
+    private void runCommandsToRunAfterMatch() {
+        String winnerName = "{WINNER_NAME}";
+        if (winner == null && !getPlugin().vanillaHungerGamesConfig().commandsToRunAfterMatch().isEmpty()) {
+            System.out.println("[VanillaHungerGames] Somehow the winner was null at the time of the match ending. This is most likely to happen if no one joined the match. We will still try to execute the commands.");
+        } else {
+            winnerName = winner.getDisplayName();
+        }
+        for (String command : getPlugin().vanillaHungerGamesConfig().commandsToRunAfterMatch()) {
+            command = command.replace("{WINNER_NAME}", winnerName);
+            dispatchCommand(getServer().getConsoleSender(), command);
         }
     }
 
