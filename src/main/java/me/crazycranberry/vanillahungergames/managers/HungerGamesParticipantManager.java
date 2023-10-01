@@ -6,6 +6,7 @@ import me.crazycranberry.vanillahungergames.events.HungerGamesCompletedEvent;
 import me.crazycranberry.vanillahungergames.events.InvincibilityEndedEvent;
 import me.crazycranberry.vanillahungergames.events.ParticipantJoinTournamentEvent;
 import me.crazycranberry.vanillahungergames.events.ParticipantLeaveTournamentEvent;
+import me.crazycranberry.vanillahungergames.events.TournamentEmptiedEvent;
 import me.crazycranberry.vanillahungergames.events.TournamentStartedEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -149,6 +150,7 @@ public class HungerGamesParticipantManager implements Listener {
             System.out.println("[VanillaHungerGames] Uh oh " + participant.getPlayer().getDisplayName() + " got stuck in the hunger games after it ended. We'll attempt to restore their config when they do respawn.");
             tournamentParticipants.remove(participant);
         }
+        Bukkit.getPluginManager().callEvent(new TournamentEmptiedEvent());
     }
 
     @EventHandler

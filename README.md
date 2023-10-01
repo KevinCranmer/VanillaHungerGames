@@ -30,6 +30,12 @@ List all available classes.
 Get info about a certain class.
 #### /hgclass <CLASS_NAME>
 Set your class for the tournament. Must be done before the tournament starts.
+#### /hgrefresh (Requires OP permission)
+Refreshes yml configuration files
+
+## Configurations:
+
+See available configurations [here](configurations.md).
 
 ## Contact Me
 Discord: https://discord.gg/UTjtJPTjGG

@@ -8,7 +8,7 @@ commands:
   hgcreate:
     description: Start a hunger games tournament
     permission: admin
-    permission-message: You do not have permission to refresh.
+    permission-message: You do not have permission to create a hunger games world.
   hgjoin:
     description: Join the hunger games tournament
   hgleave:
@@ -19,6 +19,10 @@ commands:
     description: Get info about a certain class
   hgclasses:
     description: Get a list of all classes
+  hgrefresh:
+    description: Refresh yml configurations
+    permission: admin
+    permission-message: You do not have permission to refresh.
 permissions:
   admin:
     description: Vanilla Hunger Games Admin permission

@@ -6,6 +6,7 @@ import me.crazycranberry.vanillahungergames.commands.ClassesCommand;
 import me.crazycranberry.vanillahungergames.commands.CreateHungerGamesCommand;
 import me.crazycranberry.vanillahungergames.commands.JoinHungerGamesCommand;
 import me.crazycranberry.vanillahungergames.commands.LeaveHungerGamesCommand;
+import me.crazycranberry.vanillahungergames.commands.RefreshConfigCommand;
 import me.crazycranberry.vanillahungergames.managers.EnchantmentManager;
 import me.crazycranberry.vanillahungergames.managers.HungerGamesManager;
 import me.crazycranberry.vanillahungergames.managers.HungerGamesParticipantManager;
@@ -17,8 +18,11 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import static me.crazycranberry.vanillahungergames.utils.FileUtils.loadConfig;
+
 public final class VanillaHungerGames extends JavaPlugin implements Listener {
     private static VanillaHungerGames plugin;
+    private VanillaHungerGamesConfig config;
 
     @Override
     public void onEnable() {
@@ -27,6 +31,7 @@ public final class VanillaHungerGames extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(this, this);
         registerManagers();
         registerCommands();
+        refreshConfigs();
     }
 
     @Override
@@ -54,6 +59,7 @@ public final class VanillaHungerGames extends JavaPlugin implements Listener {
         setCommandManager("hgclass", new ClassCommand());
         setCommandManager("hgclassInfo", new ClassInfoCommand());
         setCommandManager("hgclasses", new ClassesCommand());
+        setCommandManager("hgrefresh", new RefreshConfigCommand());
     }
 
     private void setCommandManager(String command, CommandExecutor commandManager) {
@@ -62,6 +68,20 @@ public final class VanillaHungerGames extends JavaPlugin implements Listener {
             System.out.println(String.format("[VanillaHungerGames][ ERROR ] - Error loading the %s command", command));
         } else {
             pc.setExecutor(commandManager);
+        }
+    }
+
+    public VanillaHungerGamesConfig vanillaHungerGamesConfig() {
+        return config;
+    }
+
+    public String refreshConfigs() {
+        try {
+            config = new VanillaHungerGamesConfig(loadConfig("vanilla_hunger_games.yml"));
+            return "Successfully loaded configs.";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return e.getMessage();
         }
     }
 }
