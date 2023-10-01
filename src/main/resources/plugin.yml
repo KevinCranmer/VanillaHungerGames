@@ -7,6 +7,8 @@ description: Vanilla hunger games where players must craft their own armor/weapo
 commands:
   hgcreate:
     description: Start a hunger games tournament
+    permission: admin
+    permission-message: You do not have permission to refresh.
   hgjoin:
     description: Join the hunger games tournament
   hgleave:
@@ -17,3 +19,7 @@ commands:
     description: Get info about a certain class
   hgclasses:
     description: Get a list of all classes
+permissions:
+  admin:
+    description: Vanilla Hunger Games Admin permission
+    default: op
