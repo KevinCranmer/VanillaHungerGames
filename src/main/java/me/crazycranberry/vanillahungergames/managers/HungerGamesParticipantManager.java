@@ -52,7 +52,7 @@ public class HungerGamesParticipantManager implements Listener {
             event.getPlayer().teleport(hungerGamesWorld().getSpawnLocation());
         } else if (startingWorldConfigExists(event.getPlayer())) {
             //Server crashed mid-tourney or they left during tourney lobby and they're startingWorldConfig still exists, gotta load it up for them
-            System.out.println("[VanillaHungerGames] Tourney crash recovery initiated for " + event.getPlayer().getDisplayName());
+            System.out.println("[VanillaHungerGames] Tourney crash recovery initiated for " + event.getPlayer().getName());
             restoreStartingWorldConfig(event.getPlayer());
         }
     }
@@ -147,7 +147,7 @@ public class HungerGamesParticipantManager implements Listener {
             }
         }
         for (Participant participant : tournamentParticipants()) {
-            System.out.println("[VanillaHungerGames] Uh oh " + participant.getPlayer().getDisplayName() + " got stuck in the hunger games after it ended. We'll attempt to restore their config when they do respawn.");
+            System.out.println("[VanillaHungerGames] Uh oh " + participant.getPlayer().getName() + " got stuck in the hunger games after it ended. We'll attempt to restore their config when they do respawn.");
             tournamentParticipants.remove(participant);
         }
         Bukkit.getPluginManager().callEvent(new TournamentEmptiedEvent());

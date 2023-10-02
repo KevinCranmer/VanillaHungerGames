@@ -5,6 +5,7 @@ import me.crazycranberry.vanillahungergames.playerclasses.Arsonist;
 import me.crazycranberry.vanillahungergames.playerclasses.Assassin;
 import me.crazycranberry.vanillahungergames.playerclasses.Barbarian;
 import me.crazycranberry.vanillahungergames.playerclasses.Bard;
+import me.crazycranberry.vanillahungergames.playerclasses.Cleric;
 import me.crazycranberry.vanillahungergames.playerclasses.Cultist;
 import me.crazycranberry.vanillahungergames.playerclasses.Cultivator;
 import me.crazycranberry.vanillahungergames.playerclasses.Gambler;
@@ -43,6 +44,7 @@ public class PlayerClassManager implements Listener {
         registerClass(new Assassin());
         registerClass(new Barbarian());
         registerClass(new Bard());
+        registerClass(new Cleric());
         registerClass(new Cultist());
         registerClass(new Cultivator());
         registerClass(new Gambler());

@@ -72,7 +72,7 @@ public class Trapper extends PlayerClassWithRecurringTasks implements PlayerClas
     private void giveGrassBlocks(TournamentStartedEvent event) {
         for (Participant p : tournamentParticipants()) {
             if (isCorrectClass(p.getPlayer())) {
-                p.getPlayer().getInventory().addItem(trapGrassBlocks(p.getPlayer().getDisplayName(), NUM_TRAPS));
+                p.getPlayer().getInventory().addItem(trapGrassBlocks(p.getPlayer().getName(), NUM_TRAPS));
             }
         }
     }
@@ -81,14 +81,14 @@ public class Trapper extends PlayerClassWithRecurringTasks implements PlayerClas
     private void placeTrapBlock(BlockPlaceEvent event) {
         Player player = event.getPlayer();
         ItemStack grass = event.getItemInHand();
-        if (isCorrectClass(player) && grass.getItemMeta() != null && grass.getItemMeta().getLore() != null && grass.getItemMeta().getLore().contains(lore(player.getDisplayName()))) {
-            event.getBlockPlaced().setMetadata("lore", new FixedMetadataValue(plugin, lore(player.getDisplayName())));
+        if (isCorrectClass(player) && grass.getItemMeta() != null && grass.getItemMeta().getLore() != null && grass.getItemMeta().getLore().contains(lore(player.getName()))) {
+            event.getBlockPlaced().setMetadata("lore", new FixedMetadataValue(plugin, lore(player.getName())));
             trapBlocks.add(event.getBlockPlaced());
         }
     }
 
     private boolean isPlayersTrapBlock(Player player, Block block) {
-        return block.getMetadata("lore").stream().map(MetadataValue::asString).anyMatch(m -> m.equals(lore(player.getDisplayName())));
+        return block.getMetadata("lore").stream().map(MetadataValue::asString).anyMatch(m -> m.equals(lore(player.getName())));
     }
 
     @EventHandler
@@ -96,7 +96,7 @@ public class Trapper extends PlayerClassWithRecurringTasks implements PlayerClas
         Player player = event.getPlayer();
         Block block = event.getBlock();
         if (isCorrectClass(player) && block.getType() == Material.GRASS_BLOCK && isPlayersTrapBlock(player, block)) {
-            player.getWorld().dropItemNaturally(block.getLocation(), trapGrassBlocks(player.getDisplayName(), 1));
+            player.getWorld().dropItemNaturally(block.getLocation(), trapGrassBlocks(player.getName(), 1));
             event.setDropItems(false);
         }
     }

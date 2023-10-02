@@ -45,7 +45,7 @@ public class HuntingCompass {
         Location startingLoc = compassHolder.getLocation();
         Location closestLocation = tournamentParticipants().get(0).getPlayer().equals(compassHolder) ? tournamentParticipants().get(1).getPlayer().getLocation() : tournamentParticipants().get(0).getPlayer().getLocation();
         for (Participant p : tournamentParticipants()) {
-            if (p.getPlayer().getGameMode() == GameMode.SURVIVAL && !p.getPlayer().getDisplayName().equals(compassHolder.getDisplayName())) {
+            if (p.getPlayer().getGameMode() == GameMode.SURVIVAL && !p.getPlayer().getName().equals(compassHolder.getName())) {
                 Location playerLoc = p.getPlayer().getLocation();
                 double distanceSquared = distanceSquared(playerLoc, startingLoc);
                 if (distanceSquared < distanceSquared(startingLoc, closestLocation)) {

@@ -60,14 +60,14 @@ public class Cultist extends PlayerClassWithRecurringTasks implements PlayerClas
     private void entitySacrificed(EntityDeathEvent event) {
         if (event.getEntity().getKiller() != null && isCorrectClass(event.getEntity().getKiller())) {
             Player cultist = event.getEntity().getKiller();
-            cultists.put(cultist.getDisplayName(), cultists.getOrDefault(cultist.getDisplayName(), 0) + 1);
-            if (cultists.getOrDefault(cultist.getDisplayName(), 0) < NUM_SACRIFICES) {
-                cultist.sendMessage(String.format("%s%s/%s sacrifices%s", ChatColor.RED, cultists.get(cultist.getDisplayName()), NUM_SACRIFICES, ChatColor.RESET));
+            cultists.put(cultist.getName(), cultists.getOrDefault(cultist.getName(), 0) + 1);
+            if (cultists.getOrDefault(cultist.getName(), 0) < NUM_SACRIFICES) {
+                cultist.sendMessage(String.format("%s%s/%s sacrifices%s", ChatColor.RED, cultists.get(cultist.getName()), NUM_SACRIFICES, ChatColor.RESET));
             }
-            if (cultists.get(cultist.getDisplayName()) == WARNING_SACRIFICES) {
+            if (cultists.get(cultist.getName()) == WARNING_SACRIFICES) {
                 broadcastToHungerGamesParticipants(String.format("%sA cultist is dangerously close to completing their ritual%s", ChatColor.RED, ChatColor.RESET));
             }
-            if (cultists.get(cultist.getDisplayName()) == NUM_SACRIFICES) {
+            if (cultists.get(cultist.getName()) == NUM_SACRIFICES) {
                 if (Math.random() < 0.5) {
                     EnderDragon dragon = (EnderDragon) hungerGamesWorld().spawnEntity(hungerGamesWorld().getSpawnLocation(), EntityType.ENDER_DRAGON);
                     updateEnderDragonPhase(plugin);

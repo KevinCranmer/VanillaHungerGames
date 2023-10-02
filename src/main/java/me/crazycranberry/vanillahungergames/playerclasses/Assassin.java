@@ -47,7 +47,7 @@ public class Assassin implements PlayerClass{
     public void onMembraneUse(PlayerInteractEvent event) {
         ItemStack item = event.getItem();
         Player player = event.getPlayer();
-        if (isCorrectClass(player) && item != null && item.getType() == Material.PHANTOM_MEMBRANE) {
+        if (isCorrectClass(player) && item != null && item.getType() == Material.PHANTOM_MEMBRANE && !player.hasCooldown(Material.PHANTOM_MEMBRANE)) {
             player.setCooldown(Material.PHANTOM_MEMBRANE, 20 * INVISIBLE_COOLDOWN_SEC);
             player.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 20 * INVISIBLE_DURATION_SEC, 0, true, true));
         }
