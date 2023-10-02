@@ -35,7 +35,7 @@ public class Cleric extends PlayerClassWithRecurringTasks implements PlayerClass
     private static final int HEAL_COOLDOWN = 25;
     private static final double HEAL_DURATION = 7.5;
     private static final double HEALING_RADIUS = 4;
-    private static final double HEAL_AMOUNT_PER_HEAL = 0.55;
+    private static final double HEAL_AMOUNT_PER_HEAL = 1.1;
     private static final long TICKS_BETWEEN_HEALS = 10;
     private static final List<Vector> fireworkAdditionVector = List.of(
             new Vector(HEALING_RADIUS, 0, HEALING_RADIUS),
@@ -104,6 +104,9 @@ public class Cleric extends PlayerClassWithRecurringTasks implements PlayerClass
                 p.setHealth(Math.min(p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue(), p.getHealth() + HEAL_AMOUNT_PER_HEAL));
                 clerics.get(p).decreaseHealthTimeRemaining(((double) TICKS_BETWEEN_HEALS) / 20L);
                 summonFireWorks(p.getLocation());
+            } else if (!clerics.get(p).locMatches(p.getLocation())){
+                p.sendMessage(String.format("%sYou broke concentration by moving. The healing aura has stopped.%s", ChatColor.GRAY, ChatColor.RESET));
+                clerics.remove(p);
             } else {
                 clerics.remove(p);
             }
