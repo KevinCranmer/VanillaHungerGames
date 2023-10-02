@@ -63,7 +63,10 @@ public class Cleric extends PlayerClassWithRecurringTasks implements PlayerClass
             if (isCorrectClass(p.getPlayer())) {
                 ItemStack gold = new ItemStack(Material.GOLD_NUGGET, 1);
                 ItemMeta meta = gold.getItemMeta();
-                meta.setLore(List.of(String.format("%sUse this item to create a healing aura for %s seconds. Moving breaks the aura.%s", ChatColor.GOLD, HEAL_DURATION, ChatColor.RESET), String.format("%s%s second cooldown.%s", ChatColor.GRAY, HEAL_COOLDOWN, ChatColor.RESET)));
+                meta.setLore(List.of(
+                        String.format("%sUse this item to create a healing aura for %s seconds.%s", ChatColor.GOLD, HEAL_DURATION, ChatColor.RESET),
+                        String.format("%sMoving breaks the aura.%s", ChatColor.GOLD, ChatColor.RESET),
+                        String.format("%s%s second cooldown.%s", ChatColor.GRAY, HEAL_COOLDOWN, ChatColor.RESET)));
                 gold.setItemMeta(meta);
                 p.getPlayer().getInventory().addItem(gold);
                 if (!clericExists) {
