@@ -14,8 +14,8 @@ import static me.crazycranberry.vanillahungergames.managers.HungerGamesWorldMana
 public class HungerGamesEventList {
     private static final List<Integer> borderRadiuses = List.of(500, 400, 300, 200, 100, 50, 25, 10);
     private static int phase = 0;
-    private static final int MIN = 60000;
-    private static final int SEC = 1000;
+    private static final int MIN = 30000;
+    private static final int SEC = 500;
     private static int eventIndex = 0;
 
     public static List<HungerGamesEvent> events() {

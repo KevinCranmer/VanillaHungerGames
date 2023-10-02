@@ -20,7 +20,7 @@ public class Tamer implements PlayerClass {
 
     @Override
     public String getInfo() {
-        return "Tamers always successfully tame wolves and start with 3 bones.";
+        return "Tamers always successfully tame wolves and start with 3 bones, and 1 wolf egg.";
     }
 
     @EventHandler
@@ -39,6 +39,7 @@ public class Tamer implements PlayerClass {
         for (Participant p : tournamentParticipants()) {
             if (isCorrectClass(p.getPlayer())) {
                 p.getPlayer().getInventory().addItem(new ItemStack(Material.BONE, 3));
+                p.getPlayer().getInventory().addItem(new ItemStack(Material.WOLF_SPAWN_EGG, 1));
             }
         }
     }

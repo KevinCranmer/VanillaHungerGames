@@ -101,7 +101,7 @@ public class HungerGamesManager implements Listener {
         if (winner == null && !getPlugin().vanillaHungerGamesConfig().commandsToRunAfterMatch().isEmpty()) {
             System.out.println("[VanillaHungerGames] Somehow the winner was null at the time of the match ending. This is most likely to happen if no one joined the match. We will still try to execute the commands.");
         } else {
-            winnerName = winner.getDisplayName();
+            winnerName = winner.getName();
         }
         for (String command : getPlugin().vanillaHungerGamesConfig().commandsToRunAfterMatch()) {
             command = command.replace("{WINNER_NAME}", winnerName);

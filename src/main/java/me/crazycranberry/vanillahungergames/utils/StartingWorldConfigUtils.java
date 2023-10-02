@@ -136,7 +136,7 @@ public class StartingWorldConfigUtils {
     }
 
     public static File configFile(Player p) {
-        return new File(getPlugin().getDataFolder().getAbsolutePath() + File.separatorChar + CONFIG_FOLDER_NAME, p.getDisplayName() + ".yml");
+        return new File(getPlugin().getDataFolder().getAbsolutePath() + File.separatorChar + CONFIG_FOLDER_NAME, p.getName() + ".yml");
     }
 
     public static boolean startingWorldConfigExists(Player p) {
