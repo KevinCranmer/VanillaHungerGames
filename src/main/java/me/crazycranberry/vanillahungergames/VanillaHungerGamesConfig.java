@@ -40,7 +40,6 @@ public class VanillaHungerGamesConfig {
 
     private void loadConfig(YamlConfiguration config) {
         commandsToRunAfterMatch = config.getList("commands_to_run_after_match", List.of()).stream().filter(c -> c instanceof String).map(c -> (String)c).toList();
-        System.out.println(commandsToRunAfterMatch);
     }
 
     public List<String> commandsToRunAfterMatch() {

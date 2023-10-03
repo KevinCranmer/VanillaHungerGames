@@ -81,7 +81,7 @@ public class Cleric extends PlayerClassWithRecurringTasks implements PlayerClass
     public void onGoldNuggetUse(PlayerInteractEvent event) {
         ItemStack item = event.getItem();
         Player player = event.getPlayer();
-        if (isCorrectClass(player) && item != null && item.getType() == Material.GOLD_NUGGET && !player.hasCooldown(Material.GOAT_HORN)) {
+        if (isCorrectClass(player) && item != null && item.getType() == Material.GOLD_NUGGET && !player.hasCooldown(Material.GOLD_NUGGET)) {
             player.setCooldown(Material.GOLD_NUGGET, 20 * HEAL_COOLDOWN);
             clerics.put(player, new ClericHealInfo(HEAL_DURATION, player.getLocation()));
         }
