@@ -4,6 +4,7 @@ import me.crazycranberry.vanillahungergames.Participant;
 import me.crazycranberry.vanillahungergames.customitems.HuntingCompass;
 import me.crazycranberry.vanillahungergames.events.HungerGamesCompletedEvent;
 import me.crazycranberry.vanillahungergames.events.InvincibilityEndedEvent;
+import me.crazycranberry.vanillahungergames.events.ParticipantAttemptToJoinEvent;
 import me.crazycranberry.vanillahungergames.events.ParticipantJoinTournamentEvent;
 import me.crazycranberry.vanillahungergames.events.ParticipantLeaveTournamentEvent;
 import me.crazycranberry.vanillahungergames.events.TournamentEmptiedEvent;
@@ -21,10 +22,13 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.potion.PotionEffect;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static me.crazycranberry.vanillahungergames.VanillaHungerGames.getPlugin;
 import static me.crazycranberry.vanillahungergames.customitems.HuntingCompass.pointCompassToNearestPlayer;
@@ -42,28 +46,20 @@ public class HungerGamesParticipantManager implements Listener {
 
     @EventHandler
     public void onPlayerJoinServer(PlayerJoinEvent event) {
-        event.getPlayer().setInvulnerable(false); // delete me
-        if (tournamentInProgress() && isTournamentParticipant(event.getPlayer())) {
-            //if they dc'd while in a tournament, sucks to suck but put them in spectator (no combat logging)
-            event.getPlayer().setGameMode(GameMode.SPECTATOR);
-            event.getPlayer().teleport(hungerGamesWorld().getSpawnLocation());
-        } else if (isTournamentParticipant(event.getPlayer())) {
-            //if they dc'd while in the lobby, bring them back to starting point
-            event.getPlayer().teleport(hungerGamesWorld().getSpawnLocation());
-        } else if (startingWorldConfigExists(event.getPlayer())) {
-            //Server crashed mid-tourney or they left during tourney lobby and they're startingWorldConfig still exists, gotta load it up for them
+        if (startingWorldConfigExists(event.getPlayer())) {
+            //Server crashed mid-tourney or they left during tourney and they're startingWorldConfig still exists, gotta load it up for them
             System.out.println("[VanillaHungerGames] Tourney crash recovery initiated for " + event.getPlayer().getName());
-            restoreStartingWorldConfig(event.getPlayer());
+            restoreStartingWorldConfig(event.getPlayer(), getParticipant(event.getPlayer()) == null ? null : getParticipant(event.getPlayer()).getStartingWorldConfig().getScoreboard());
         }
     }
 
     @EventHandler
     public void onRespawn(PlayerRespawnEvent event) {
-        if (isTournamentParticipant(event.getPlayer()) && hungerGamesWorld() != null) {
+        if (isTournamentParticipant(event.getPlayer()) && event.getPlayer().getWorld().equals(hungerGamesWorld())) {
             event.setRespawnLocation(event.getPlayer().getLocation());
-        } else if (hungerGamesWorld() == null && configFile(event.getPlayer()).exists()){
+        } else if (configFile(event.getPlayer()).exists()){
             //when a player doesn't respawn after dying in the hunger games and the tournament has already ended
-            restoreStartingWorldConfig(event.getPlayer());
+            restoreStartingWorldConfig(event.getPlayer(), getParticipant(event.getPlayer()) == null ? null : getParticipant(event.getPlayer()).getStartingWorldConfig().getScoreboard());
             //idk why it happens, but if we don't switch the game mode and switch back, the player bugs out and can't move.
             //it has to do with the player trying to respawn in a world that doesn't exist, so we switch gamemodes 50ms after we've
             //teleported them to the main world
@@ -85,7 +81,7 @@ public class HungerGamesParticipantManager implements Listener {
     }
 
     @EventHandler
-    public void onParticipantJoinTournament(ParticipantJoinTournamentEvent event) {
+    public void onParticipantAttemptToJoinEvent(ParticipantAttemptToJoinEvent event) {
         if (hungerGamesWorld() == null) {
             return;
         }
@@ -93,6 +89,7 @@ public class HungerGamesParticipantManager implements Listener {
         Player player = event.getParticipant().getPlayer();
         player.getInventory().clear();
         tournamentParticipants.add(event.getParticipant());
+        player.teleport(hungerGamesWorld().getSpawnLocation());
         if (tournamentInProgress()) {
             player.setGameMode(GameMode.SPECTATOR);
         } else {
@@ -100,7 +97,7 @@ public class HungerGamesParticipantManager implements Listener {
             player.setInvulnerable(true);
         }
         player.setLevel(69);
-        player.teleport(hungerGamesWorld().getSpawnLocation());
+        Bukkit.getPluginManager().callEvent(new ParticipantJoinTournamentEvent(event.getParticipant()));
     }
 
     @EventHandler
@@ -142,7 +139,7 @@ public class HungerGamesParticipantManager implements Listener {
     private void sendEveryoneHomeHappy() {
         for (Participant participant : tournamentParticipants()) {
             if (!participant.getPlayer().isDead()) {
-                restoreStartingWorldConfig(participant.getPlayer());
+                restoreStartingWorldConfig(participant.getPlayer(), participant == null ? null : participant.getStartingWorldConfig().getScoreboard());
                 tournamentParticipants.remove(participant);
             }
         }
@@ -156,17 +153,15 @@ public class HungerGamesParticipantManager implements Listener {
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         if (isTournamentParticipant(event.getPlayer())) {
-            onParticipantLeaveTournament(new ParticipantLeaveTournamentEvent(getParticipant(event.getPlayer())));
+            // We'll handle restoring their starting configs when they rejoin the server
+            tournamentParticipants.remove(getParticipant(event.getPlayer()));
         }
     }
 
     @EventHandler
     public void onParticipantLeaveTournament(ParticipantLeaveTournamentEvent event) {
-        restoreStartingWorldConfig(event.getParticipant().getPlayer());
-        if (!event.getParticipant().getPlayer().getWorld().equals(hungerGamesWorld())) {
-            // successfully brought the player back to their world
-            tournamentParticipants.remove(event.getParticipant());
-        }
+        tournamentParticipants.remove(event.getParticipant());
+        restoreStartingWorldConfig(event.getParticipant().getPlayer(), event.getShouldTeleport(), event.getParticipant() == null ? null : event.getParticipant().getStartingWorldConfig().getScoreboard());
     }
 
     @EventHandler
@@ -187,6 +182,13 @@ public class HungerGamesParticipantManager implements Listener {
     public void onRightClick(PlayerInteractEvent event) {
         if (event.getPlayer().getWorld().equals(hungerGamesWorld()) && event.getItem() != null && event.getItem().getType() == Material.COMPASS) {
             pointCompassToNearestPlayer(event.getItem(), event.getPlayer());
+        }
+    }
+    
+    @EventHandler
+    public void onTeleport(PlayerTeleportEvent event) {
+        if (isTournamentParticipant(event.getPlayer()) && event.getFrom().getWorld().equals(hungerGamesWorld()) && !event.getTo().getWorld().equals(hungerGamesWorld())) {
+            Bukkit.getPluginManager().callEvent(new ParticipantLeaveTournamentEvent(getParticipant(event.getPlayer()), false));
         }
     }
 

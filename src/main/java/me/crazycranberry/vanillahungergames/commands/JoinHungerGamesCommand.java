@@ -1,6 +1,7 @@
 package me.crazycranberry.vanillahungergames.commands;
 
 import me.crazycranberry.vanillahungergames.Participant;
+import me.crazycranberry.vanillahungergames.events.ParticipantAttemptToJoinEvent;
 import me.crazycranberry.vanillahungergames.events.ParticipantJoinTournamentEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -25,7 +26,7 @@ public class JoinHungerGamesCommand implements CommandExecutor {
                 p.sendMessage("You're already in the hunger games tournament, you silly goose.");
             } else {
                 p.sendMessage("Joining the hunger games...");
-                Bukkit.getPluginManager().callEvent(new ParticipantJoinTournamentEvent(new Participant(p)));
+                Bukkit.getPluginManager().callEvent(new ParticipantAttemptToJoinEvent(new Participant(p)));
                 return false;
             }
         }
