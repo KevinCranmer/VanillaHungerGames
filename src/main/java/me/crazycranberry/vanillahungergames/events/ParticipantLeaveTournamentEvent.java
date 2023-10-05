@@ -10,16 +10,16 @@ public class ParticipantLeaveTournamentEvent extends Event {
 
     private final Participant participant;
 
-    private final boolean shouldUseStartinConfigTeleportDesition;
+    private final boolean shouldTeleport;
 
     public ParticipantLeaveTournamentEvent(Participant participant) {
         this.participant = participant;
-        this.shouldUseStartinConfigTeleportDesition = true;
+        this.shouldTeleport = true;
     }
 
     public ParticipantLeaveTournamentEvent(Participant participant, boolean shouldTeleport) {
         this.participant = participant;
-        this.shouldUseStartinConfigTeleportDesition = shouldTeleport;
+        this.shouldTeleport = shouldTeleport;
     }
 
     public Participant getParticipant() {
@@ -27,7 +27,7 @@ public class ParticipantLeaveTournamentEvent extends Event {
     }
 
     public boolean getShouldTeleport() {
-        return shouldUseStartinConfigTeleportDesition;
+        return shouldTeleport;
     }
 
     @Override
