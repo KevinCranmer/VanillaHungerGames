@@ -1,6 +1,7 @@
 package me.crazycranberry.vanillahungergames.utils;
 
 import me.crazycranberry.vanillahungergames.Participant;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.block.data.type.Bed;
@@ -9,6 +10,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.scoreboard.Scoreboard;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,25 +27,38 @@ import static me.crazycranberry.vanillahungergames.managers.HungerGamesParticipa
 public class StartingWorldConfigUtils {
     static final String CONFIG_FOLDER_NAME = "startingWorldConfigs";
 
+    public static void restoreStartingWorldConfig(Player p, Scoreboard maybeScoreboard) {
+        restoreStartingWorldConfig(p, true, maybeScoreboard);
+    }
+
     //We load from a config file because we want to be able to maintain the player state in the event of a server crash
-    public static void restoreStartingWorldConfig(Player p) {
+    public static void restoreStartingWorldConfig(Player p, boolean shouldTeleport, Scoreboard maybeScoreboard) {
+        p.setInvulnerable(false);
         File f = configFile(p);
         FileConfiguration c = YamlConfiguration.loadConfiguration(f);
-        ItemStack[] content = ((List<ItemStack>) c.get("inventory.armor")).toArray(new ItemStack[0]);
-        p.getInventory().setArmorContents(content);
-        content = ((List<ItemStack>) c.get("inventory.content")).toArray(new ItemStack[0]);
-        p.getInventory().setContents(content);
-        p.teleport(c.getLocation("location"));
+        List<ItemStack> armor = (List<ItemStack>) c.get("inventory.armor");
+        if (armor != null) {
+            ItemStack[] content = armor.toArray(new ItemStack[0]);
+            p.getInventory().setArmorContents(content);
+        }
+        List<ItemStack> inventory = (List<ItemStack>) c.get("inventory.content");
+        if (inventory != null) {
+            ItemStack[] content = inventory.toArray(new ItemStack[0]);
+            p.getInventory().setContents(content);
+        }
+        Location destination = c.getLocation("location");
+        if (shouldTeleport) {
+            p.teleport(c.getLocation("location"));
+        }
         p.setGameMode(GameMode.values()[c.getInt("gameMode")]);
         for (PotionEffect hungerGamesPotionEffect : p.getActivePotionEffects()) {
             p.removePotionEffect(hungerGamesPotionEffect.getType());
         }
         p.addPotionEffects((List<PotionEffect>) c.get("activePotionEffects"));
         p.setBedSpawnLocation(findNearbyBed(c.getLocation("bedSpawnLocation")));
-        Participant participant = getParticipant(p);
-        if (participant != null && participant.getStartingWorldConfig() != null) {
+        if (maybeScoreboard != null) {
             //If we still have the previous scoreboard from memory
-            p.setScoreboard(participant.getStartingWorldConfig().getScoreboard());
+            p.setScoreboard(maybeScoreboard);
         }
         List<Method> playerSetMethods = Arrays.stream(Player.class.getMethods()).filter(m -> m.getName().startsWith("set")).toList();
         for (Field field : Participant.ParticipantStartingWorldConfig.class.getDeclaredFields()) {
@@ -70,6 +85,25 @@ public class StartingWorldConfigUtils {
             }
         }
         deleteStartingWorldConfig(p);
+        if (p.getLocation() != destination && shouldTeleport) {
+            // For some reason the teleport is slow(?). So try it again if it doesn't work immediately.
+            teleportInACoupleMs(p, destination);
+        }
+    }
+
+    private static void teleportInACoupleMs(Player p, Location destination) {
+        new java.util.Timer().schedule(
+                new java.util.TimerTask() {
+                    @Override
+                    public void run() {
+                        Bukkit.getServer().getScheduler().callSyncMethod(getPlugin(), () -> {
+                            p.teleport(destination);
+                            return true;
+                        });
+                    }
+                },
+                100
+        );
     }
 
     private static Location findNearbyBed(Location maybeSpawn) {

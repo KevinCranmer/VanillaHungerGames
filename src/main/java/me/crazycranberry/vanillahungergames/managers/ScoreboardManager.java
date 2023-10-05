@@ -14,6 +14,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.scoreboard.Criteria;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
@@ -23,6 +24,7 @@ import java.util.Objects;
 
 import static me.crazycranberry.vanillahungergames.managers.HungerGamesManager.hasSomeoneWonTournament;
 import static me.crazycranberry.vanillahungergames.managers.HungerGamesManager.tournamentInProgress;
+import static me.crazycranberry.vanillahungergames.managers.HungerGamesParticipantManager.getParticipant;
 import static me.crazycranberry.vanillahungergames.managers.HungerGamesParticipantManager.isTournamentParticipant;
 import static me.crazycranberry.vanillahungergames.managers.HungerGamesParticipantManager.numAlivePlayers;
 import static me.crazycranberry.vanillahungergames.managers.HungerGamesParticipantManager.tournamentParticipants;
@@ -67,7 +69,7 @@ public class ScoreboardManager implements Listener {
     }
 
     @EventHandler
-    public void onParticipantLeave(ParticipantLeaveTournamentEvent event) {
+    public void onTeleport(PlayerTeleportEvent event) {
         updateScoreboard();
     }
 

@@ -5,29 +5,17 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
-public class ParticipantLeaveTournamentEvent extends Event {
+public class ParticipantAttemptToJoinEvent extends Event {
     private static final HandlerList HANDLERS = new HandlerList();
 
     private final Participant participant;
 
-    private final boolean shouldUseStartinConfigTeleportDesition;
-
-    public ParticipantLeaveTournamentEvent(Participant participant) {
+    public ParticipantAttemptToJoinEvent(Participant participant) {
         this.participant = participant;
-        this.shouldUseStartinConfigTeleportDesition = true;
-    }
-
-    public ParticipantLeaveTournamentEvent(Participant participant, boolean shouldTeleport) {
-        this.participant = participant;
-        this.shouldUseStartinConfigTeleportDesition = shouldTeleport;
     }
 
     public Participant getParticipant() {
         return participant;
-    }
-
-    public boolean getShouldTeleport() {
-        return shouldUseStartinConfigTeleportDesition;
     }
 
     @Override
