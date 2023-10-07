@@ -48,7 +48,7 @@ public class StartingWorldConfigUtils {
         }
         Location destination = c.getLocation("location");
         if (shouldTeleport) {
-            p.teleport(c.getLocation("location"));
+            p.teleport(destination);
         }
         p.setGameMode(GameMode.values()[c.getInt("gameMode")]);
         for (PotionEffect hungerGamesPotionEffect : p.getActivePotionEffects()) {

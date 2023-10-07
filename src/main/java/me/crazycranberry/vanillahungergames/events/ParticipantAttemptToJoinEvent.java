@@ -10,12 +10,19 @@ public class ParticipantAttemptToJoinEvent extends Event {
 
     private final Participant participant;
 
-    public ParticipantAttemptToJoinEvent(Participant participant) {
+    private final boolean overwriteStartingConfig;
+
+    public ParticipantAttemptToJoinEvent(Participant participant, boolean overwriteStartingConfig) {
         this.participant = participant;
+        this.overwriteStartingConfig = overwriteStartingConfig;
     }
 
     public Participant getParticipant() {
         return participant;
+    }
+
+    public boolean getOverwriteStartingConfig() {
+        return overwriteStartingConfig;
     }
 
     @Override

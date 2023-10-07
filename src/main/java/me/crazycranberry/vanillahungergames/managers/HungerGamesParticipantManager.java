@@ -57,6 +57,21 @@ public class HungerGamesParticipantManager implements Listener {
     public void onRespawn(PlayerRespawnEvent event) {
         if (isTournamentParticipant(event.getPlayer()) && event.getPlayer().getWorld().equals(hungerGamesWorld())) {
             event.setRespawnLocation(event.getPlayer().getLocation());
+            // If another plugin tries to override the respawn location, we need to override that override.
+            new java.util.Timer().schedule(
+                    new java.util.TimerTask() {
+                        @Override
+                        public void run() {
+                            Bukkit.getServer().getScheduler().callSyncMethod(getPlugin(), () -> {
+                                if (!event.getPlayer().getWorld().equals(hungerGamesWorld())) {
+                                    Bukkit.getPluginManager().callEvent(new ParticipantAttemptToJoinEvent(new Participant(event.getPlayer()), false));
+                                }
+                                return true;
+                            });
+                        }
+                    },
+                    50
+            );
         } else if (configFile(event.getPlayer()).exists()){
             //when a player doesn't respawn after dying in the hunger games and the tournament has already ended
             restoreStartingWorldConfig(event.getPlayer(), getParticipant(event.getPlayer()) == null ? null : getParticipant(event.getPlayer()).getStartingWorldConfig().getScoreboard());
@@ -85,10 +100,14 @@ public class HungerGamesParticipantManager implements Listener {
         if (hungerGamesWorld() == null) {
             return;
         }
-        saveStartingWorldConfig(event.getParticipant());
         Player player = event.getParticipant().getPlayer();
+        if (event.getOverwriteStartingConfig() || !startingWorldConfigExists(player)) {
+            saveStartingWorldConfig(event.getParticipant());
+        }
         player.getInventory().clear();
-        tournamentParticipants.add(event.getParticipant());
+        if (!isTournamentParticipant(player)) {
+            tournamentParticipants.add(event.getParticipant());
+        }
         player.teleport(hungerGamesWorld().getSpawnLocation());
         if (tournamentInProgress()) {
             player.setGameMode(GameMode.SPECTATOR);
