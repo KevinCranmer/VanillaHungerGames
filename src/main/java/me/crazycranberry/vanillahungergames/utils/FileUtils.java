@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import static me.crazycranberry.vanillahungergames.VanillaHungerGames.getPlugin;
+import static me.crazycranberry.vanillahungergames.VanillaHungerGames.logger;
 
 public class FileUtils {
     public static boolean deleteRecursively(File path) {
@@ -32,13 +33,13 @@ public class FileUtils {
         File configFile = new File(getPlugin().getDataFolder() + "" + File.separatorChar + configName);
         if(!configFile.exists()){
             getPlugin().saveResource(configName, true);
-            System.out.println(String.format("[VanillaHungerGames] %s not found! copied %s to %s", configName, configName, getPlugin().getDataFolder()));
+            logger().info(String.format("%s not found! copied %s to %s", configName, configName, getPlugin().getDataFolder()));
         }
         YamlConfiguration config = new YamlConfiguration();
         try {
             config.load(configFile);
         } catch (InvalidConfigurationException | IOException e) {
-            throw new InvalidConfigurationException("[VanillaHungerGames] An error occured while trying to load " + configName);
+            throw new InvalidConfigurationException("An error occured while trying to load " + configName);
         }
         return config;
     }
@@ -51,7 +52,7 @@ public class FileUtils {
             InputStreamReader defaultChanceConfigReader = new InputStreamReader(defaultChanceConfigStream);
             config.load(defaultChanceConfigReader);
         } catch (InvalidConfigurationException | IOException e) {
-            System.out.println("[ VanillaHungerGames ] An error occured while trying to load the (default) " + configName + " file.");
+            logger().info("[ VanillaHungerGames ] An error occured while trying to load the (default) " + configName + " file.");
             e.printStackTrace();
         }
         return config;

@@ -18,9 +18,12 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.logging.Logger;
+
 import static me.crazycranberry.vanillahungergames.utils.FileUtils.loadConfig;
 
 public final class VanillaHungerGames extends JavaPlugin implements Listener {
+    private static Logger logger;
     private static VanillaHungerGames plugin;
     private VanillaHungerGamesConfig config;
 
@@ -28,6 +31,7 @@ public final class VanillaHungerGames extends JavaPlugin implements Listener {
     public void onEnable() {
         // Plugin startup logic
         plugin = this;
+        logger = this.getLogger();
         getServer().getPluginManager().registerEvents(this, this);
         registerManagers();
         registerCommands();
@@ -37,6 +41,10 @@ public final class VanillaHungerGames extends JavaPlugin implements Listener {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
+    }
+
+    public static Logger logger() {
+        return logger;
     }
 
     public static VanillaHungerGames getPlugin() {
@@ -65,7 +73,7 @@ public final class VanillaHungerGames extends JavaPlugin implements Listener {
     private void setCommandManager(String command, CommandExecutor commandManager) {
         PluginCommand pc = getCommand(command);
         if (pc == null) {
-            System.out.println(String.format("[VanillaHungerGames][ ERROR ] - Error loading the %s command", command));
+            logger().warning(String.format("[ ERROR ] - Error loading the %s command", command));
         } else {
             pc.setExecutor(commandManager);
         }

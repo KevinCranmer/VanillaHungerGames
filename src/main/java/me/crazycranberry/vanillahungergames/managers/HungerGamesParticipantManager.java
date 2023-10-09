@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Set;
 
 import static me.crazycranberry.vanillahungergames.VanillaHungerGames.getPlugin;
+import static me.crazycranberry.vanillahungergames.VanillaHungerGames.logger;
 import static me.crazycranberry.vanillahungergames.customitems.HuntingCompass.pointCompassToNearestPlayer;
 import static me.crazycranberry.vanillahungergames.managers.HungerGamesManager.tournamentInProgress;
 import static me.crazycranberry.vanillahungergames.managers.HungerGamesWorldManager.hungerGamesWorld;
@@ -48,7 +49,7 @@ public class HungerGamesParticipantManager implements Listener {
     public void onPlayerJoinServer(PlayerJoinEvent event) {
         if (startingWorldConfigExists(event.getPlayer())) {
             //Server crashed mid-tourney or they left during tourney and they're startingWorldConfig still exists, gotta load it up for them
-            System.out.println("[VanillaHungerGames] Tourney crash recovery initiated for " + event.getPlayer().getName());
+            logger().info("Tourney crash recovery initiated for " + event.getPlayer().getName());
             restoreStartingWorldConfig(event.getPlayer(), getParticipant(event.getPlayer()) == null ? null : getParticipant(event.getPlayer()).getStartingWorldConfig().getScoreboard());
         }
     }
@@ -163,7 +164,7 @@ public class HungerGamesParticipantManager implements Listener {
             }
         }
         for (Participant participant : tournamentParticipants()) {
-            System.out.println("[VanillaHungerGames] Uh oh " + participant.getPlayer().getName() + " got stuck in the hunger games after it ended. We'll attempt to restore their config when they do respawn.");
+            logger().warning("Uh oh " + participant.getPlayer().getName() + " got stuck in the hunger games after it ended. We'll attempt to restore their config when they do respawn.");
             tournamentParticipants.remove(participant);
         }
         Bukkit.getPluginManager().callEvent(new TournamentEmptiedEvent());
