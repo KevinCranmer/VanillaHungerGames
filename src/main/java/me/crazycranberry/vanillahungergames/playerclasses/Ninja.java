@@ -131,7 +131,7 @@ public class Ninja implements PlayerClass {
                 player.setFlying(true);
                 Location startingLocation = player.getLocation().clone();
                 startingLocation.setY(startingLocation.getY() + 0.1);
-                player.teleport(startingLocation);
+                //player.teleport(startingLocation);
                 player.setVelocity(velocity);
                 double dashDamage = findStrongestWeaponDamage(player) / 2;
                 dashAttackTicksRemainingByPlayer.put(player, DASH_ATTACK_DURATION_TICKS);

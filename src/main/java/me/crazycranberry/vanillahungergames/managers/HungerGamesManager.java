@@ -18,6 +18,7 @@ import org.bukkit.event.Listener;
 import java.util.List;
 
 import static me.crazycranberry.vanillahungergames.VanillaHungerGames.getPlugin;
+import static me.crazycranberry.vanillahungergames.VanillaHungerGames.logger;
 import static me.crazycranberry.vanillahungergames.managers.HungerGamesParticipantManager.tournamentParticipants;
 import static org.bukkit.Bukkit.dispatchCommand;
 import static org.bukkit.Bukkit.getServer;
@@ -99,7 +100,7 @@ public class HungerGamesManager implements Listener {
     private void runCommandsToRunAfterMatch() {
         String winnerName = "{WINNER_NAME}";
         if (winner == null && !getPlugin().vanillaHungerGamesConfig().commandsToRunAfterMatch().isEmpty()) {
-            System.out.println("[VanillaHungerGames] Somehow the winner was null at the time of the match ending. This is most likely to happen if no one joined the match. We will still try to execute the commands.");
+            logger().info("Somehow the winner was null at the time of the match ending. This is most likely to happen if no one joined the match. We will still try to execute the commands.");
         } else {
             winnerName = winner.getName();
         }

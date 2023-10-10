@@ -26,6 +26,7 @@ import java.util.Objects;
 
 import static me.crazycranberry.vanillahungergames.HungerGamesEventList.beginningBorderSize;
 import static me.crazycranberry.vanillahungergames.VanillaHungerGames.getPlugin;
+import static me.crazycranberry.vanillahungergames.VanillaHungerGames.logger;
 import static me.crazycranberry.vanillahungergames.utils.FileUtils.deleteRecursively;
 
 public class HungerGamesWorldManager implements Listener {
@@ -54,7 +55,7 @@ public class HungerGamesWorldManager implements Listener {
     @EventHandler
     public void onPluginEnable(PluginEnableEvent event) {
         if (event.getPlugin().equals(plugin) && hungerGamesWorld() != null) {
-            System.out.println("[VanillaHungerGames] Attempting to delete the hunger games world...");
+            logger().info("Attempting to delete the hunger games world...");
             Bukkit.getServer().unloadWorld(hungerGamesWorld(), true);
             deleteRecursively(hungerGamesWorld().getWorldFolder());
             worldReady = false;
@@ -72,7 +73,7 @@ public class HungerGamesWorldManager implements Listener {
     @EventHandler
     public void onPluginDisable(PluginDisableEvent event) {
         if (event.getPlugin().equals(plugin) && hungerGamesWorld() != null) {
-            System.out.println("[VanillaHungerGames] Attempting to delete the hunger games world...");
+            logger().info("Attempting to delete the hunger games world...");
             Bukkit.getServer().unloadWorld(hungerGamesWorld(), true);
             deleteRecursively(hungerGamesWorld().getWorldFolder());
             worldReady = false;
@@ -100,7 +101,7 @@ public class HungerGamesWorldManager implements Listener {
 
     @EventHandler
     public void onHungerGamesCompleted(HungerGamesCompletedEvent event) {
-        System.out.println("[VanillaHungerGames] Attempting to delete the hunger games world...");
+        logger().info("Attempting to delete the hunger games world...");
         Bukkit.getServer().unloadWorld(hungerGamesWorld(), true);
         File worldFolder = hungerGamesWorld().getWorldFolder();
         deleteRecursively(worldFolder);

@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.List;
 
 import static me.crazycranberry.vanillahungergames.VanillaHungerGames.getPlugin;
+import static me.crazycranberry.vanillahungergames.VanillaHungerGames.logger;
 import static me.crazycranberry.vanillahungergames.utils.FileUtils.loadOriginalConfig;
 
 public class VanillaHungerGamesConfig {
@@ -23,7 +24,7 @@ public class VanillaHungerGamesConfig {
         boolean madeAChange = false;
         for (String key : originalConfig.getKeys(true)) {
             if (!config.isString(key) && !config.isConfigurationSection(key) && !config.isBoolean(key) && !config.isDouble(key) && !config.isInt(key) && !config.isList(key)) {
-                System.out.println("[VanillaHungerGames] The " + key + " is missing from vanilla_hunger_games.yml, adding it now.");
+                logger().info("The " + key + " is missing from vanilla_hunger_games.yml, adding it now.");
                 config.set(key, originalConfig.get(key));
                 madeAChange = true;
             }

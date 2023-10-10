@@ -8,6 +8,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import static me.crazycranberry.vanillahungergames.VanillaHungerGames.logger;
 import static me.crazycranberry.vanillahungergames.managers.HungerGamesWorldManager.hungerGamesWorld;
 
 public class CreateHungerGamesCommand implements CommandExecutor {
@@ -20,7 +21,7 @@ public class CreateHungerGamesCommand implements CommandExecutor {
                     Player p = (Player) sender;
                     p.sendMessage("There already is a tournament in progress, you trying to overload the server or something?");
                 } else {
-                    System.out.println("[VanillaHungerGames] There is already a tournament in progress.");
+                    logger().info("There is already a tournament in progress.");
                 }
                 return false;
             }
