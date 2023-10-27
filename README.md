@@ -24,6 +24,8 @@ Creates a new hunger games world and lets user know when it's ready to join.
 Join the hunger games world. If a player joins _after_ a tournament has already started, they can spectate.
 #### /hgleave
 Leave the hunger games world and be brought back to wherever the player was previously.
+#### /hgteleport
+Teleport to another hunger games participant (only usable while spectating).
 #### /hgclasses
 List all available classes.
 #### /hgclassinfo <CLASS_NAME>

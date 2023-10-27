@@ -7,6 +7,7 @@ import me.crazycranberry.vanillahungergames.commands.CreateHungerGamesCommand;
 import me.crazycranberry.vanillahungergames.commands.JoinHungerGamesCommand;
 import me.crazycranberry.vanillahungergames.commands.LeaveHungerGamesCommand;
 import me.crazycranberry.vanillahungergames.commands.RefreshConfigCommand;
+import me.crazycranberry.vanillahungergames.commands.SpectateTeleportCommand;
 import me.crazycranberry.vanillahungergames.managers.EnchantmentManager;
 import me.crazycranberry.vanillahungergames.managers.HungerGamesManager;
 import me.crazycranberry.vanillahungergames.managers.HungerGamesParticipantManager;
@@ -64,6 +65,7 @@ public final class VanillaHungerGames extends JavaPlugin implements Listener {
         setCommandManager("hgcreate", new CreateHungerGamesCommand());
         setCommandManager("hgjoin", new JoinHungerGamesCommand());
         setCommandManager("hgleave", new LeaveHungerGamesCommand());
+        setCommandManager("hgteleport", new SpectateTeleportCommand());
         setCommandManager("hgclass", new ClassCommand());
         setCommandManager("hgclassInfo", new ClassInfoCommand());
         setCommandManager("hgclasses", new ClassesCommand());

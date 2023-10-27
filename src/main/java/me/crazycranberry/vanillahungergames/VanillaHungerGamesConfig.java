@@ -13,6 +13,7 @@ import static me.crazycranberry.vanillahungergames.utils.FileUtils.loadOriginalC
 public class VanillaHungerGamesConfig {
     private final YamlConfiguration originalConfig;
     private List<String> commandsToRunAfterMatch;
+    private boolean allowSpectateTeleport;
 
     public VanillaHungerGamesConfig(YamlConfiguration config) {
         originalConfig = loadOriginalConfig("vanilla_hunger_games.yml");
@@ -41,9 +42,14 @@ public class VanillaHungerGamesConfig {
 
     private void loadConfig(YamlConfiguration config) {
         commandsToRunAfterMatch = config.getList("commands_to_run_after_match", List.of()).stream().filter(c -> c instanceof String).map(c -> (String)c).toList();
+        allowSpectateTeleport = config.getBoolean("allow_spectate_teleporting", true);
     }
 
     public List<String> commandsToRunAfterMatch() {
         return commandsToRunAfterMatch;
+    }
+
+    public boolean allowSpectateTeleport() {
+        return allowSpectateTeleport;
     }
 }
