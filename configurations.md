@@ -16,3 +16,8 @@ commands_to_run_after_match:
  - eco give {WINNER_NAME} 1000
 ```
 - Default: Empty list
+
+**allow_spectate_teleporting**
+- Whether or not players can teleport to other players while spectating.
+- You may want to disable this if players are on teams and they can let their teammates know where an enemy is.
+- Default: `true`

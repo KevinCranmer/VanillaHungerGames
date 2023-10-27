@@ -8,11 +8,13 @@ commands:
   hgcreate:
     description: Start a hunger games tournament
     permission: admin
-    permission-message: You do not have permission to create a hunger games world.
+    permission-message: You do not have permission to create a hunger games world
   hgjoin:
     description: Join the hunger games tournament
   hgleave:
     description: Abandon the hunger games match and return to the original world
+  hgteleport:
+    description: Teleport to another hunger games player (only usable while spectating)
   hgclass:
     description: Set your class for the games
   hgclassInfo:
