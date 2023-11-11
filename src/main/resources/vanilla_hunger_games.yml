@@ -1,2 +1,3 @@
 commands_to_run_after_match:
 allow_spectate_teleporting: true
+require_admin_to_create: true

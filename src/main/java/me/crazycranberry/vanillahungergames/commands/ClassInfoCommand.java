@@ -16,6 +16,8 @@ import java.util.Optional;
 import static me.crazycranberry.vanillahungergames.managers.PlayerClassManager.possibleClasses;
 
 public class ClassInfoCommand implements CommandExecutor, TabCompleter {
+    public static final ChatColor CLASS_INFO_CHAT_COLOR = ChatColor.GOLD;
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (sender instanceof Player && command.getName().equalsIgnoreCase("hgclassinfo")) {
@@ -29,7 +31,7 @@ public class ClassInfoCommand implements CommandExecutor, TabCompleter {
                 p.sendMessage(String.format("%s is not a valid class name. Try /hgclasses to find available classes.", args[0]));
                 return false;
             }
-            p.sendMessage(String.format("%s%s%s", ChatColor.GOLD, playerClass.get().getInfo(), ChatColor.RESET));
+            p.sendMessage(String.format("%s%s%s", CLASS_INFO_CHAT_COLOR, playerClass.get().getInfo(), ChatColor.RESET));
         }
         return true;
     }

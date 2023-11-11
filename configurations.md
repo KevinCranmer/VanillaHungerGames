@@ -21,3 +21,7 @@ commands_to_run_after_match:
 - Whether or not players can teleport to other players while spectating.
 - You may want to disable this if players are on teams and they can let their teammates know where an enemy is.
 - Default: `true`
+
+**require_admin_to_create**
+- If true then only admins can execute `/hgcreate`.
+- Default: `true`

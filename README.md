@@ -18,8 +18,8 @@ they want to survive the games.
 To make things a little spicy, I've added a handful of classes. Check out this [YouTube video I made for the classes](https://www.youtube.com/watch?v=h8884krttm0&t=8s).
 
 ## Commands
-#### /hgcreate (Requires OP permission)
-Creates a new hunger games world and lets user know when it's ready to join.
+#### /hgcreate (Requires OP permission by default)
+Creates a new hunger games world and lets user know when it's ready to join. Update the `require_admin_to_create` field to allow any users to be able to create a Hunger Games.
 #### /hgjoin
 Join the hunger games world. If a player joins _after_ a tournament has already started, they can spectate.
 #### /hgleave

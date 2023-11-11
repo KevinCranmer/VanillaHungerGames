@@ -14,6 +14,7 @@ public class VanillaHungerGamesConfig {
     private final YamlConfiguration originalConfig;
     private List<String> commandsToRunAfterMatch;
     private boolean allowSpectateTeleport;
+    private boolean requireAdminToCreateGames;
 
     public VanillaHungerGamesConfig(YamlConfiguration config) {
         originalConfig = loadOriginalConfig("vanilla_hunger_games.yml");
@@ -43,6 +44,7 @@ public class VanillaHungerGamesConfig {
     private void loadConfig(YamlConfiguration config) {
         commandsToRunAfterMatch = config.getList("commands_to_run_after_match", List.of()).stream().filter(c -> c instanceof String).map(c -> (String)c).toList();
         allowSpectateTeleport = config.getBoolean("allow_spectate_teleporting", true);
+        requireAdminToCreateGames = config.getBoolean("require_admin_to_create", true);
     }
 
     public List<String> commandsToRunAfterMatch() {
@@ -51,5 +53,9 @@ public class VanillaHungerGamesConfig {
 
     public boolean allowSpectateTeleport() {
         return allowSpectateTeleport;
+    }
+
+    public boolean requireAdminToCreateGames() {
+        return requireAdminToCreateGames;
     }
 }

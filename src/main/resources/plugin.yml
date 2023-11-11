@@ -6,9 +6,7 @@ authors: [CrazyCranberry]
 description: Vanilla hunger games where players must craft their own armor/weapons/food.
 commands:
   hgcreate:
-    description: Start a hunger games tournament
-    permission: admin
-    permission-message: You do not have permission to create a hunger games world
+    description: Start a hunger games tournament (by default only admins can use)
   hgjoin:
     description: Join the hunger games tournament
   hgleave:
