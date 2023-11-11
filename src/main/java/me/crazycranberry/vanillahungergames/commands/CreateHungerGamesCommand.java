@@ -8,6 +8,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import static me.crazycranberry.vanillahungergames.VanillaHungerGames.getPlugin;
 import static me.crazycranberry.vanillahungergames.VanillaHungerGames.logger;
 import static me.crazycranberry.vanillahungergames.managers.HungerGamesWorldManager.hungerGamesWorld;
 
@@ -25,9 +26,13 @@ public class CreateHungerGamesCommand implements CommandExecutor {
                 }
                 return false;
             }
+            if (sender instanceof Player && !sender.isOp() && getPlugin().vanillaHungerGamesConfig().requireAdminToCreateGames()) {
+                sender.sendMessage("Only an admin can create a Hunger Games match.");
+                return false;
+            }
             Bukkit.getServer().broadcastMessage("Building a hunger games world. Server is about to freeze for a moment. My apologies.");
             Bukkit.getPluginManager().callEvent(new HungerGamesWorldCreateCommandExecutedEvent());
-            return false;
+            return true;
         }
         return true;
     }

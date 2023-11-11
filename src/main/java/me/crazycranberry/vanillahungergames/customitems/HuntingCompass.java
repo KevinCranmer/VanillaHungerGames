@@ -1,6 +1,7 @@
 package me.crazycranberry.vanillahungergames.customitems;
 
 import me.crazycranberry.vanillahungergames.Participant;
+import me.crazycranberry.vanillahungergames.playerclasses.Hunter;
 import org.bukkit.Material;
 import org.bukkit.Location;
 import org.bukkit.GameMode;
@@ -11,6 +12,7 @@ import org.bukkit.inventory.meta.CompassMeta;
 
 import java.util.Objects;
 
+import static me.crazycranberry.vanillahungergames.managers.HungerGamesParticipantManager.getParticipant;
 import static me.crazycranberry.vanillahungergames.managers.HungerGamesParticipantManager.tournamentParticipants;
 import static me.crazycranberry.vanillahungergames.managers.HungerGamesWorldManager.hungerGamesWorld;
 
@@ -53,7 +55,7 @@ public class HuntingCompass {
                 }
             }
         }
-        if (startingLoc.distanceSquared(closestLocation) < 2500) {
+        if (startingLoc.distanceSquared(closestLocation) < 2500 && !(getParticipant(compassHolder).getPlayerClass() instanceof Hunter)) {
             compassHolder.sendMessage(String.format("%sYour target is too close (within 50 blocks). Your compass has %snot%s been updated%s", ChatColor.GRAY, ChatColor.DARK_RED, ChatColor.GRAY, ChatColor.RESET));
         } else {
             compassHolder.sendMessage(String.format("%sCompass updated.%s", ChatColor.GRAY, ChatColor.RESET));
@@ -61,5 +63,14 @@ public class HuntingCompass {
             Objects.requireNonNull(compassMeta).setLodestoneTracked(false);
         }
         compass.setItemMeta(compassMeta);
+    }
+
+    public static CompassMeta getPlayersHuntingCompassMeta(Player p) {
+        for (ItemStack item : p.getInventory().getContents()) {
+            if (item != null && item.getType().equals(Material.COMPASS)) {
+                return (CompassMeta) item.getItemMeta();
+            }
+        }
+        return null;
     }
 }
