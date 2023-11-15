@@ -33,6 +33,7 @@ import static me.crazycranberry.vanillahungergames.VanillaHungerGames.logger;
 import static me.crazycranberry.vanillahungergames.customitems.HuntingCompass.pointCompassToNearestPlayer;
 import static me.crazycranberry.vanillahungergames.managers.HungerGamesManager.tournamentInProgress;
 import static me.crazycranberry.vanillahungergames.managers.HungerGamesWorldManager.hungerGamesWorld;
+import static me.crazycranberry.vanillahungergames.managers.HungerGamesWorldManager.pregameLobbyWorld;
 import static me.crazycranberry.vanillahungergames.managers.HungerGamesWorldManager.spawnLoc;
 import static me.crazycranberry.vanillahungergames.managers.PlayerClassManager.possibleClasses;
 import static me.crazycranberry.vanillahungergames.utils.StartingWorldConfigUtils.configFile;
@@ -107,7 +108,11 @@ public class HungerGamesParticipantManager implements Listener {
         if (!isTournamentParticipant(player)) {
             tournamentParticipants.add(event.getParticipant());
         }
-        player.teleport(hungerGamesWorld().getSpawnLocation());
+        if (getPlugin().vanillaHungerGamesConfig().usePreGameLobby() && pregameLobbyWorld() != null && !tournamentInProgress()) {
+            player.teleport(pregameLobbyWorld().getSpawnLocation());
+        } else {
+            player.teleport(hungerGamesWorld().getSpawnLocation());
+        }
         if (tournamentInProgress()) {
             player.setGameMode(GameMode.SPECTATOR);
         } else {

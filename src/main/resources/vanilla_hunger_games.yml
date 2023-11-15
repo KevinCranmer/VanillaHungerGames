@@ -1,3 +1,6 @@
 commands_to_run_after_match:
 allow_spectate_teleporting: true
 require_admin_to_create: true
+pre_game_lobby:
+  use: false
+  world_name: hg_default_world
