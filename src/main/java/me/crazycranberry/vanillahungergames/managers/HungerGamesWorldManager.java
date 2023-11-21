@@ -53,6 +53,16 @@ public class HungerGamesWorldManager implements Listener {
         return spawnLoc;
     }
 
+    public static boolean isInHungerGamesWorld(World world) {
+        if (world == null) {
+            return false;
+        }
+        if (world.equals(hungerGamesWorld()) || world.equals(pregameLobbyWorld())) {
+            return true;
+        }
+        return false;
+    }
+
     public static World hungerGamesWorld() {
         if (hungerGamesWorld == null && Bukkit.getServer().getWorld(HUNGER_GAMES_WORLD_NAME) != null) {
             hungerGamesWorld = Bukkit.getServer().getWorld(HUNGER_GAMES_WORLD_NAME);
@@ -79,7 +89,7 @@ public class HungerGamesWorldManager implements Listener {
 
     @EventHandler
     public void onPortalEvent(PlayerPortalEvent event) {
-        if (event.getPlayer().getWorld().equals(hungerGamesWorld())) {
+        if (isInHungerGamesWorld(event.getPlayer().getWorld())) {
             event.getPlayer().sendMessage(String.format("%sSorry mate, no other dimensions during the hunger games. Props to you for having the chance though!%s", ChatColor.GRAY, ChatColor.RESET));
             event.setCancelled(true);
         }

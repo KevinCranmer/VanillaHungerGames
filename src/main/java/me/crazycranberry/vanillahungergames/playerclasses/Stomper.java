@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageEvent;
 
-import static me.crazycranberry.vanillahungergames.managers.HungerGamesWorldManager.hungerGamesWorld;
+import static me.crazycranberry.vanillahungergames.managers.HungerGamesWorldManager.isInHungerGamesWorld;
 
 public class Stomper implements PlayerClass {
     @Override
@@ -23,7 +23,7 @@ public class Stomper implements PlayerClass {
     private void fallDamage(EntityDamageEvent event) {
         if (event.getCause().equals(EntityDamageEvent.DamageCause.FALL) && event.getEntity() instanceof Player) {
             Player player = (Player) event.getEntity();
-            if (isCorrectClass(player) && player.getWorld().equals(hungerGamesWorld())) {
+            if (isCorrectClass(player) && isInHungerGamesWorld(player.getWorld())) {
                 double damage = event.getDamage();
                 event.setDamage(0);
                 event.setCancelled(true);

@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import static me.crazycranberry.vanillahungergames.managers.HungerGamesWorldManager.hungerGamesWorld;
+import static me.crazycranberry.vanillahungergames.managers.HungerGamesWorldManager.isInHungerGamesWorld;
 import static me.crazycranberry.vanillahungergames.managers.HungerGamesWorldManager.isWorldReady;
 import static me.crazycranberry.vanillahungergames.utils.StartingWorldConfigUtils.startingWorldConfigExists;
 
@@ -23,7 +24,7 @@ public class JoinHungerGamesCommand implements CommandExecutor {
             World hgWorld = hungerGamesWorld();
             if (hgWorld == null || !isWorldReady()) {
                 p.sendMessage("There is not a hunger games tournament happening at the moment.");
-            } else if (p.getWorld().equals(hgWorld)) {
+            } else if (isInHungerGamesWorld(p.getWorld())) {
                 p.sendMessage("You're already in the hunger games tournament, you silly goose.");
             } else if (startingWorldConfigExists(p) && (args.length < 1 || (!args[0].equals("keep") && !args[0].equals("overwrite")))) {
                 p.sendMessage("Your inventory/location of when you last joined the hunger games is still saved. Please type one of the following:");

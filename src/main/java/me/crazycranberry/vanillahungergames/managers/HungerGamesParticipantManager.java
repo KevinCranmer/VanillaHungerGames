@@ -33,6 +33,7 @@ import static me.crazycranberry.vanillahungergames.VanillaHungerGames.logger;
 import static me.crazycranberry.vanillahungergames.customitems.HuntingCompass.pointCompassToNearestPlayer;
 import static me.crazycranberry.vanillahungergames.managers.HungerGamesManager.tournamentInProgress;
 import static me.crazycranberry.vanillahungergames.managers.HungerGamesWorldManager.hungerGamesWorld;
+import static me.crazycranberry.vanillahungergames.managers.HungerGamesWorldManager.isInHungerGamesWorld;
 import static me.crazycranberry.vanillahungergames.managers.HungerGamesWorldManager.pregameLobbyWorld;
 import static me.crazycranberry.vanillahungergames.managers.HungerGamesWorldManager.spawnLoc;
 import static me.crazycranberry.vanillahungergames.managers.PlayerClassManager.possibleClasses;
@@ -55,7 +56,7 @@ public class HungerGamesParticipantManager implements Listener {
 
     @EventHandler
     public void onRespawn(PlayerRespawnEvent event) {
-        if (isTournamentParticipant(event.getPlayer()) && event.getPlayer().getWorld().equals(hungerGamesWorld())) {
+        if (isTournamentParticipant(event.getPlayer()) && isInHungerGamesWorld(event.getPlayer().getWorld())) {
             event.setRespawnLocation(event.getPlayer().getLocation());
             // If another plugin tries to override the respawn location, we need to override that override.
             new java.util.Timer().schedule(
@@ -63,7 +64,7 @@ public class HungerGamesParticipantManager implements Listener {
                         @Override
                         public void run() {
                             Bukkit.getServer().getScheduler().callSyncMethod(getPlugin(), () -> {
-                                if (!event.getPlayer().getWorld().equals(hungerGamesWorld())) {
+                                if (!isInHungerGamesWorld(event.getPlayer().getWorld())) {
                                     Bukkit.getPluginManager().callEvent(new ParticipantAttemptToJoinEvent(new Participant(event.getPlayer()), false));
                                 }
                                 return true;
@@ -189,28 +190,28 @@ public class HungerGamesParticipantManager implements Listener {
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
-        if (event.getEntity().getWorld().equals(hungerGamesWorld())) {
+        if (isInHungerGamesWorld(event.getEntity().getWorld())) {
             event.getEntity().setGameMode(GameMode.SPECTATOR);
         }
     }
 
     @EventHandler
     public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
-        if (!tournamentInProgress() && event.getPlayer().getWorld().equals(hungerGamesWorld())) {
+        if (!tournamentInProgress() && isInHungerGamesWorld(event.getPlayer().getWorld())) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onRightClick(PlayerInteractEvent event) {
-        if (event.getPlayer().getWorld().equals(hungerGamesWorld()) && event.getItem() != null && event.getItem().getType() == Material.COMPASS) {
+        if (isInHungerGamesWorld(event.getPlayer().getWorld()) && event.getItem() != null && event.getItem().getType() == Material.COMPASS) {
             pointCompassToNearestPlayer(event.getItem(), event.getPlayer());
         }
     }
     
     @EventHandler
     public void onTeleport(PlayerTeleportEvent event) {
-        if (isTournamentParticipant(event.getPlayer()) && event.getFrom().getWorld().equals(hungerGamesWorld()) && !event.getTo().getWorld().equals(hungerGamesWorld())) {
+        if (isTournamentParticipant(event.getPlayer()) && isInHungerGamesWorld(event.getFrom().getWorld()) && !isInHungerGamesWorld(event.getTo().getWorld())) {
             Bukkit.getPluginManager().callEvent(new ParticipantLeaveTournamentEvent(getParticipant(event.getPlayer()), false));
         }
     }

@@ -28,7 +28,7 @@ import static me.crazycranberry.vanillahungergames.managers.HungerGamesParticipa
 import static me.crazycranberry.vanillahungergames.managers.HungerGamesParticipantManager.isTournamentParticipant;
 import static me.crazycranberry.vanillahungergames.managers.HungerGamesParticipantManager.numAlivePlayers;
 import static me.crazycranberry.vanillahungergames.managers.HungerGamesParticipantManager.tournamentParticipants;
-import static me.crazycranberry.vanillahungergames.managers.HungerGamesWorldManager.hungerGamesWorld;
+import static me.crazycranberry.vanillahungergames.managers.HungerGamesWorldManager.isInHungerGamesWorld;
 
 public class ScoreboardManager implements Listener {
     private static Scoreboard scoreboard;
@@ -55,7 +55,7 @@ public class ScoreboardManager implements Listener {
 
     @EventHandler
     public void onPlayerJoinServer(PlayerJoinEvent event) {
-        if (event.getPlayer().getWorld().equals(hungerGamesWorld())) {
+        if (isInHungerGamesWorld(event.getPlayer().getWorld())) {
             event.getPlayer().setScoreboard(scoreboard());
         } else if (event.getPlayer().getScoreboard().equals(scoreboard())) {
             event.getPlayer().setScoreboard(Objects.requireNonNull(Bukkit.getScoreboardManager()).getNewScoreboard());
@@ -91,7 +91,7 @@ public class ScoreboardManager implements Listener {
         objective.getScore("Spectating").setScore(tournamentParticipants().size() - alivePlayers);
         if (tournamentInProgress() && alivePlayers == 1) {
             for (Participant p : tournamentParticipants()) {
-                if (p.getPlayer().getGameMode().equals(GameMode.SURVIVAL) && p.getPlayer().getWorld().equals(hungerGamesWorld()) && !hasSomeoneWonTournament()) {
+                if (p.getPlayer().getGameMode().equals(GameMode.SURVIVAL) && isInHungerGamesWorld(p.getPlayer().getWorld()) && !hasSomeoneWonTournament()) {
                     Bukkit.getPluginManager().callEvent(new ParticipantWonTournamentEvent(p));
                     break;
                 }
@@ -104,7 +104,7 @@ public class ScoreboardManager implements Listener {
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
-        if (event.getEntity().getWorld().equals(hungerGamesWorld())) {
+        if (isInHungerGamesWorld(event.getEntity().getWorld())) {
             updateScoreboard();
         }
     }

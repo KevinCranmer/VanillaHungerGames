@@ -16,7 +16,7 @@ import java.util.Optional;
 import static me.crazycranberry.vanillahungergames.managers.HungerGamesManager.tournamentInProgress;
 import static me.crazycranberry.vanillahungergames.managers.HungerGamesParticipantManager.getParticipant;
 import static me.crazycranberry.vanillahungergames.managers.HungerGamesParticipantManager.isTournamentParticipant;
-import static me.crazycranberry.vanillahungergames.managers.HungerGamesWorldManager.hungerGamesWorld;
+import static me.crazycranberry.vanillahungergames.managers.HungerGamesWorldManager.isInHungerGamesWorld;
 import static me.crazycranberry.vanillahungergames.managers.PlayerClassManager.possibleClasses;
 
 public class ClassCommand implements CommandExecutor, TabCompleter {
@@ -24,7 +24,7 @@ public class ClassCommand implements CommandExecutor, TabCompleter {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (sender instanceof Player && command.getName().equalsIgnoreCase("hgclass")) {
             Player p = (Player) sender;
-            if (!p.getWorld().equals(hungerGamesWorld()) || !isTournamentParticipant(p)) {
+            if (!isInHungerGamesWorld(p.getWorld()) || !isTournamentParticipant(p)) {
                 p.sendMessage("Bro, you're not in the hunger games tournament. You can't change class right now... smh.");
                 return false;
             }

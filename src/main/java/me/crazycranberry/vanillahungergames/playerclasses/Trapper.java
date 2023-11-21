@@ -23,7 +23,7 @@ import java.util.List;
 
 import static me.crazycranberry.vanillahungergames.VanillaHungerGames.getPlugin;
 import static me.crazycranberry.vanillahungergames.managers.HungerGamesParticipantManager.tournamentParticipants;
-import static me.crazycranberry.vanillahungergames.managers.HungerGamesWorldManager.hungerGamesWorld;
+import static me.crazycranberry.vanillahungergames.managers.HungerGamesWorldManager.isInHungerGamesWorld;
 
 public class Trapper extends PlayerClassWithRecurringTasks implements PlayerClass {
     private final int NUM_TRAPS = 24;
@@ -106,7 +106,7 @@ public class Trapper extends PlayerClassWithRecurringTasks implements PlayerClas
         Location playerLoc = player.getLocation();
         List<Block> closeTraps = new ArrayList<>();
         for (Block block : trapBlocks) {
-            if (!isPlayersTrapBlock(player, block) && playerLoc.distanceSquared(block.getLocation()) < 7 && block.getWorld().equals(hungerGamesWorld())) {
+            if (!isPlayersTrapBlock(player, block) && playerLoc.distanceSquared(block.getLocation()) < 7 && isInHungerGamesWorld(block.getWorld())) {
                 closeTraps.add(block);
             }
         }

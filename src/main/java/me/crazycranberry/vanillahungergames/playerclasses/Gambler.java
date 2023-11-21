@@ -10,7 +10,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.List;
 
-import static me.crazycranberry.vanillahungergames.managers.HungerGamesWorldManager.hungerGamesWorld;
+import static me.crazycranberry.vanillahungergames.managers.HungerGamesWorldManager.isInHungerGamesWorld;
 
 public class Gambler implements PlayerClass {
     private static final double ODDS_FOR_POSITIVE_EFFECT = 0.7;
@@ -60,7 +60,7 @@ public class Gambler implements PlayerClass {
 
     @EventHandler
     private void givePotionEffect(PlayerDeathEvent event) {
-        if (event.getEntity().getKiller() != null && event.getEntity().getKiller().getWorld().equals(hungerGamesWorld()) && isCorrectClass(event.getEntity().getKiller())) {
+        if (event.getEntity().getKiller() != null && isInHungerGamesWorld(event.getEntity().getKiller().getWorld()) && isCorrectClass(event.getEntity().getKiller())) {
             Player gambler = event.getEntity().getKiller();
             List<GamblerPotion> potionMap = badPotionEffects;
             if (Math.random() < ODDS_FOR_POSITIVE_EFFECT) {

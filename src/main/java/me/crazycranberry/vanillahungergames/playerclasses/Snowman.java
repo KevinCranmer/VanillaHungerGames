@@ -20,6 +20,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 import static me.crazycranberry.vanillahungergames.VanillaHungerGames.getPlugin;
 import static me.crazycranberry.vanillahungergames.managers.HungerGamesParticipantManager.tournamentParticipants;
 import static me.crazycranberry.vanillahungergames.managers.HungerGamesWorldManager.hungerGamesWorld;
+import static me.crazycranberry.vanillahungergames.managers.HungerGamesWorldManager.isInHungerGamesWorld;
 
 public class Snowman extends PlayerClassWithRecurringTasks implements PlayerClass {
     Plugin plugin;
@@ -57,7 +58,7 @@ public class Snowman extends PlayerClassWithRecurringTasks implements PlayerClas
     private void snowballThrown(ProjectileLaunchEvent event) {
         if (event.getEntity().getShooter() instanceof Player) {
             Player shooter = (Player) event.getEntity().getShooter();
-            if (isCorrectClass(shooter) && shooter.getWorld().equals(hungerGamesWorld())) {
+            if (isCorrectClass(shooter) && isInHungerGamesWorld(shooter.getWorld())) {
                 event.getEntity().setCustomName("Snowman");
             }
         }
@@ -79,7 +80,7 @@ public class Snowman extends PlayerClassWithRecurringTasks implements PlayerClas
         addTask(scheduler.runTaskTimer(plugin, () -> {
             for (Participant p : tournamentParticipants()) {
                 Block blockUnderPlayer = p.getPlayer().getLocation().getBlock().getRelative(BlockFace.DOWN);
-                if (p.getPlayer().getWorld().equals(hungerGamesWorld()) &&
+                if (isInHungerGamesWorld(p.getPlayer().getWorld()) &&
                         isCorrectClass(p.getPlayer()) &&
                         (blockUnderPlayer.getType() == Material.SNOW ||
                         blockUnderPlayer.getType() == Material.SNOW_BLOCK ||

@@ -10,7 +10,7 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.ItemStack;
 
 import static me.crazycranberry.vanillahungergames.managers.HungerGamesParticipantManager.tournamentParticipants;
-import static me.crazycranberry.vanillahungergames.managers.HungerGamesWorldManager.hungerGamesWorld;
+import static me.crazycranberry.vanillahungergames.managers.HungerGamesWorldManager.isInHungerGamesWorld;
 
 public class Tamer implements PlayerClass {
     @Override
@@ -25,7 +25,7 @@ public class Tamer implements PlayerClass {
 
     @EventHandler
     private void onTameAttempt(PlayerInteractEntityEvent event) {
-        if (isCorrectClass(event.getPlayer()) && event.getPlayer().getWorld().equals(hungerGamesWorld()) && event.getRightClicked().getType() == EntityType.WOLF && event.getPlayer().getInventory().getItemInMainHand().getType() == Material.BONE) {
+        if (isCorrectClass(event.getPlayer()) && isInHungerGamesWorld(event.getPlayer().getWorld()) && event.getRightClicked().getType() == EntityType.WOLF && event.getPlayer().getInventory().getItemInMainHand().getType() == Material.BONE) {
             Wolf wolf = (Wolf) event.getRightClicked();
             wolf.setOwner(event.getPlayer());
             wolf.setTamed(true);
