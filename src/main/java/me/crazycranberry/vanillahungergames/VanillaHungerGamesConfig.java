@@ -11,10 +11,13 @@ import static me.crazycranberry.vanillahungergames.VanillaHungerGames.logger;
 import static me.crazycranberry.vanillahungergames.utils.FileUtils.loadOriginalConfig;
 
 public class VanillaHungerGamesConfig {
+    public static final String PREGAME_LOBBY_DEFAULT_NAME = "hg_default_world";
     private final YamlConfiguration originalConfig;
     private List<String> commandsToRunAfterMatch;
     private boolean allowSpectateTeleport;
     private boolean requireAdminToCreateGames;
+    private boolean usePreGameLobby;
+    private String preGameLobbyWorldName;
 
     public VanillaHungerGamesConfig(YamlConfiguration config) {
         originalConfig = loadOriginalConfig("vanilla_hunger_games.yml");
@@ -45,6 +48,8 @@ public class VanillaHungerGamesConfig {
         commandsToRunAfterMatch = config.getList("commands_to_run_after_match", List.of()).stream().filter(c -> c instanceof String).map(c -> (String)c).toList();
         allowSpectateTeleport = config.getBoolean("allow_spectate_teleporting", true);
         requireAdminToCreateGames = config.getBoolean("require_admin_to_create", true);
+        usePreGameLobby = config.getBoolean("pre_game_lobby.use", false);
+        preGameLobbyWorldName = config.getString("pre_game_lobby.world_name", PREGAME_LOBBY_DEFAULT_NAME).trim();
     }
 
     public List<String> commandsToRunAfterMatch() {
@@ -57,5 +62,13 @@ public class VanillaHungerGamesConfig {
 
     public boolean requireAdminToCreateGames() {
         return requireAdminToCreateGames;
+    }
+
+    public boolean usePreGameLobby() {
+        return usePreGameLobby;
+    }
+
+    public String preGameLobbyWorldName() {
+        return preGameLobbyWorldName;
     }
 }

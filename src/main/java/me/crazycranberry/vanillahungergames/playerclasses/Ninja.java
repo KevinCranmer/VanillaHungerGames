@@ -29,6 +29,7 @@ import java.util.stream.Stream;
 import static me.crazycranberry.vanillahungergames.VanillaHungerGames.getPlugin;
 import static me.crazycranberry.vanillahungergames.managers.HungerGamesParticipantManager.tournamentParticipants;
 import static me.crazycranberry.vanillahungergames.managers.HungerGamesWorldManager.hungerGamesWorld;
+import static me.crazycranberry.vanillahungergames.managers.HungerGamesWorldManager.isInHungerGamesWorld;
 import static org.bukkit.Sound.ITEM_SHIELD_BLOCK;
 
 public class Ninja implements PlayerClass {
@@ -189,7 +190,7 @@ public class Ninja implements PlayerClass {
     private void onFallDamage(EntityDamageEvent event) {
         if (event.getCause().equals(EntityDamageEvent.DamageCause.FALL) && event.getEntity() instanceof Player) {
             Player player = (Player) event.getEntity();
-            if (isCorrectClass(player) && player.getWorld().equals(hungerGamesWorld())) {
+            if (isCorrectClass(player) && isInHungerGamesWorld(player.getWorld())) {
                 double damage = Math.max(event.getDamage() - FALL_DAMAGE_CUSHION, 0);
                 if (damage <= 0) {
                     event.setCancelled(true);

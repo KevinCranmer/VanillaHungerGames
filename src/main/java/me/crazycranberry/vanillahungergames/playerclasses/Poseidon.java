@@ -11,7 +11,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 
 import static me.crazycranberry.vanillahungergames.VanillaHungerGames.getPlugin;
 import static me.crazycranberry.vanillahungergames.managers.HungerGamesParticipantManager.tournamentParticipants;
-import static me.crazycranberry.vanillahungergames.managers.HungerGamesWorldManager.hungerGamesWorld;
+import static me.crazycranberry.vanillahungergames.managers.HungerGamesWorldManager.isInHungerGamesWorld;
 
 public class Poseidon extends PlayerClassWithRecurringTasks implements PlayerClass {
     Plugin plugin;
@@ -55,7 +55,7 @@ public class Poseidon extends PlayerClassWithRecurringTasks implements PlayerCla
         BukkitScheduler scheduler = Bukkit.getScheduler();
         addTask(scheduler.runTaskTimer(plugin, () -> {
             for (Participant p : tournamentParticipants()) {
-                if (p.getPlayer().getWorld().equals(hungerGamesWorld()) && isCorrectClass(p.getPlayer()) && p.getPlayer().isInWater()) {
+                if (isInHungerGamesWorld(p.getPlayer().getWorld()) && isCorrectClass(p.getPlayer()) && p.getPlayer().isInWater()) {
                     p.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 20 * 3, 2));
                 }
             }
@@ -67,7 +67,7 @@ public class Poseidon extends PlayerClassWithRecurringTasks implements PlayerCla
         BukkitScheduler scheduler = Bukkit.getScheduler();
         addTask(scheduler.runTaskTimer(plugin, () -> {
             for (Participant p : tournamentParticipants()) {
-                if (p.getPlayer().getWorld().equals(hungerGamesWorld()) && isCorrectClass(p.getPlayer()) && p.getPlayer().isInWater()) {
+                if (isInHungerGamesWorld(p.getPlayer().getWorld()) && isCorrectClass(p.getPlayer()) && p.getPlayer().isInWater()) {
                     p.getPlayer().setRemainingAir(p.getPlayer().getRemainingAir() + 24);
                 }
             }

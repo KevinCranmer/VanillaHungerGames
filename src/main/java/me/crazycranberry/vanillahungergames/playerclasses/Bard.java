@@ -21,6 +21,7 @@ import java.util.List;
 
 import static me.crazycranberry.vanillahungergames.managers.HungerGamesParticipantManager.tournamentParticipants;
 import static me.crazycranberry.vanillahungergames.managers.HungerGamesWorldManager.hungerGamesWorld;
+import static me.crazycranberry.vanillahungergames.managers.HungerGamesWorldManager.isInHungerGamesWorld;
 
 public class Bard implements PlayerClass {
     private final int HORN_COOLDOWN_SECONDS = 17;
@@ -57,7 +58,7 @@ public class Bard implements PlayerClass {
     public void onGoatHornSound(PlayerInteractEvent event) {
         ItemStack item = event.getItem();
         Player player = event.getPlayer();
-        if (event.getPlayer().getWorld().equals(hungerGamesWorld()) && item != null && item.getType() == Material.GOAT_HORN && !player.hasCooldown(Material.GOAT_HORN)) {
+        if (isInHungerGamesWorld(event.getPlayer().getWorld()) && item != null && item.getType() == Material.GOAT_HORN && !player.hasCooldown(Material.GOAT_HORN)) {
             MusicInstrumentMeta meta = (MusicInstrumentMeta) item.getItemMeta();
             if (meta != null && meta.getInstrument() != null) {
                 MusicInstrument horn = meta.getInstrument();

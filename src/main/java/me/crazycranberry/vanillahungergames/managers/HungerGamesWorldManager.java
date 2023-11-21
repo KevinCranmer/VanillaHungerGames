@@ -7,8 +7,10 @@ import me.crazycranberry.vanillahungergames.events.HungerGamesWorldCreatedEvent;
 import me.crazycranberry.vanillahungergames.events.TournamentStartedEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Difficulty;
 import org.bukkit.GameRule;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.WorldBorder;
 import org.bukkit.WorldCreator;
@@ -19,19 +21,25 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.PluginEnableEvent;
+import org.bukkit.generator.ChunkGenerator;
+import org.bukkit.generator.WorldInfo;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.Objects;
+import java.util.Random;
 
 import static me.crazycranberry.vanillahungergames.HungerGamesEventList.beginningBorderSize;
 import static me.crazycranberry.vanillahungergames.VanillaHungerGames.getPlugin;
 import static me.crazycranberry.vanillahungergames.VanillaHungerGames.logger;
+import static me.crazycranberry.vanillahungergames.VanillaHungerGamesConfig.PREGAME_LOBBY_DEFAULT_NAME;
 import static me.crazycranberry.vanillahungergames.utils.FileUtils.deleteRecursively;
 
 public class HungerGamesWorldManager implements Listener {
     private static final String HUNGER_GAMES_WORLD_NAME = "hungryworld";
     private static World hungerGamesWorld;
+    private static World pregameLobby;
     private static Location spawnLoc;
     private static WorldBorder border;
     private final Plugin plugin;
@@ -45,11 +53,28 @@ public class HungerGamesWorldManager implements Listener {
         return spawnLoc;
     }
 
+    public static boolean isInHungerGamesWorld(World world) {
+        if (world == null) {
+            return false;
+        }
+        if (world.equals(hungerGamesWorld()) || world.equals(pregameLobbyWorld())) {
+            return true;
+        }
+        return false;
+    }
+
     public static World hungerGamesWorld() {
-        if (hungerGamesWorld == null && Bukkit.getWorld(HUNGER_GAMES_WORLD_NAME) != null) {
-            hungerGamesWorld = Bukkit.getWorld(HUNGER_GAMES_WORLD_NAME);
+        if (hungerGamesWorld == null && Bukkit.getServer().getWorld(HUNGER_GAMES_WORLD_NAME) != null) {
+            hungerGamesWorld = Bukkit.getServer().getWorld(HUNGER_GAMES_WORLD_NAME);
         }
         return hungerGamesWorld;
+    }
+
+    public static World pregameLobbyWorld() {
+        if (pregameLobby == null && Bukkit.getServer().getWorld(getPlugin().vanillaHungerGamesConfig().preGameLobbyWorldName()) != null) {
+            pregameLobby = Bukkit.getServer().getWorld(getPlugin().vanillaHungerGamesConfig().preGameLobbyWorldName());
+        }
+        return pregameLobby;
     }
 
     @EventHandler
@@ -64,7 +89,7 @@ public class HungerGamesWorldManager implements Listener {
 
     @EventHandler
     public void onPortalEvent(PlayerPortalEvent event) {
-        if (event.getPlayer().getWorld().equals(hungerGamesWorld())) {
+        if (isInHungerGamesWorld(event.getPlayer().getWorld())) {
             event.getPlayer().sendMessage(String.format("%sSorry mate, no other dimensions during the hunger games. Props to you for having the chance though!%s", ChatColor.GRAY, ChatColor.RESET));
             event.setCancelled(true);
         }
@@ -86,7 +111,24 @@ public class HungerGamesWorldManager implements Listener {
         hungerGamesWorld = God.createWorld();
         hungerGamesWorld.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
         hungerGamesWorld.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
+        maybeGeneratePregameLobby();
         Bukkit.getPluginManager().callEvent(new HungerGamesWorldCreatedEvent());
+    }
+
+    private void maybeGeneratePregameLobby() {
+        if (!getPlugin().vanillaHungerGamesConfig().usePreGameLobby()) {
+            return;
+        }
+        WorldCreator God;
+        if (!getPlugin().vanillaHungerGamesConfig().preGameLobbyWorldName().equals(PREGAME_LOBBY_DEFAULT_NAME)) {
+            God = new WorldCreator(getPlugin().vanillaHungerGamesConfig().preGameLobbyWorldName());
+        } else {
+            God = new WorldCreator(getPlugin().vanillaHungerGamesConfig().preGameLobbyWorldName()).generator(new PreGameLobbyGenerator());
+        }
+        pregameLobby = God.createWorld();
+        pregameLobby.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+        pregameLobby.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
+        pregameLobby.setDifficulty(Difficulty.PEACEFUL);
     }
 
     @EventHandler
@@ -137,5 +179,80 @@ public class HungerGamesWorldManager implements Listener {
     @EventHandler
     public static void shrinkBorder(BorderShrinkEvent event) {
         border.setSize(event.getNewSize() * 2, 120);
+    }
+
+    public static class PreGameLobbyGenerator extends ChunkGenerator {
+        @Override
+        public boolean shouldGenerateNoise() {
+            return false;
+        }
+
+        @Override
+        public boolean shouldGenerateSurface() {
+            return false;
+        }
+
+        @Override
+        public boolean shouldGenerateBedrock() {
+            return false;
+        }
+
+        @Override
+        public boolean shouldGenerateCaves() {
+            return false;
+        }
+
+        @Override
+        public boolean shouldGenerateDecorations() {
+            return false;
+        }
+
+        @Override
+        public boolean shouldGenerateMobs() {
+            return false;
+        }
+
+        @Override
+        public boolean shouldGenerateStructures() {
+            return false;
+        }
+
+        @Override
+        public void generateSurface(@NotNull WorldInfo worldInfo, @NotNull Random random, int chunkX, int chunkZ, @NotNull ChunkData chunkData) {
+            if (chunkX == 0 && chunkZ == 0) {
+                generateLobbyFloor(chunkData);
+                generateLobbyWalls(chunkData);
+            }
+        }
+
+        @Override
+        public Location getFixedSpawnLocation(World world, Random random) {
+            return new Location(world, 7, world.getMaxHeight(), 7);
+        }
+
+        private void generateLobbyFloor(@NotNull ChunkData chunkData) {
+            for (int i = 0; i < 16; i++) {
+                for (int j = 0; j < 16; j++) {
+                    chunkData.setBlock(i, chunkData.getMaxHeight()-5, j, Material.BEDROCK);
+                }
+            }
+        }
+
+        private void generateLobbyWalls(@NotNull ChunkData chunkData) {
+            for (int i = 0; i < 16; i++) {
+                chunkData.setBlock(i, chunkData.getMaxHeight()-4, 0, Material.BEDROCK);
+                chunkData.setBlock(i, chunkData.getMaxHeight()-3, 0, Material.BEDROCK);
+                chunkData.setBlock(i, chunkData.getMaxHeight()-2, 0, Material.BEDROCK);
+                chunkData.setBlock(i, chunkData.getMaxHeight()-4, 15, Material.BEDROCK);
+                chunkData.setBlock(i, chunkData.getMaxHeight()-3, 15, Material.BEDROCK);
+                chunkData.setBlock(i, chunkData.getMaxHeight()-2, 15, Material.BEDROCK);
+                chunkData.setBlock(0, chunkData.getMaxHeight()-4, i, Material.BEDROCK);
+                chunkData.setBlock(0, chunkData.getMaxHeight()-3, i, Material.BEDROCK);
+                chunkData.setBlock(0, chunkData.getMaxHeight()-2, i, Material.BEDROCK);
+                chunkData.setBlock(15, chunkData.getMaxHeight()-4, i, Material.BEDROCK);
+                chunkData.setBlock(15, chunkData.getMaxHeight()-3, i, Material.BEDROCK);
+                chunkData.setBlock(15, chunkData.getMaxHeight()-2, i, Material.BEDROCK);
+            }
+        }
     }
 }

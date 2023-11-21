@@ -25,3 +25,13 @@ commands_to_run_after_match:
 **require_admin_to_create**
 - If true then only admins can execute `/hgcreate`.
 - Default: `true`
+
+**pre_game_lobby.use**
+- Whether or not players will sit in a lobby world while waiting for the hunger games to start.
+- Set this to true if you don't want players to be able to scout the world ahead of time.
+- Default: `false`
+
+**pre_game_lobby.world_name**
+- Specify your Hunger Games lobby world name here. Only relevant if `pre_game_lobby.use` is `true`.
+- If this field is its default value while `pre_game_lobby.use` is `true`, a simple bedrock box world will be used as the lobby.
+- Default: `hg_default_world`

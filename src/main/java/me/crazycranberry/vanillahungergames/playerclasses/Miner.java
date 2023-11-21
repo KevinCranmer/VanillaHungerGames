@@ -5,7 +5,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 
-import static me.crazycranberry.vanillahungergames.managers.HungerGamesWorldManager.hungerGamesWorld;
+import static me.crazycranberry.vanillahungergames.managers.HungerGamesWorldManager.isInHungerGamesWorld;
 
 public class Miner implements PlayerClass {
 
@@ -21,7 +21,7 @@ public class Miner implements PlayerClass {
 
     @EventHandler
     private void giveExtraIron(BlockBreakEvent event) {
-        if (isCorrectClass(event.getPlayer()) && event.getBlock().getWorld().equals(hungerGamesWorld()) && event.getBlock().getType() == Material.IRON_ORE || event.getBlock().getType() == Material.DEEPSLATE_IRON_ORE) {
+        if (isCorrectClass(event.getPlayer()) && isInHungerGamesWorld(event.getBlock().getWorld()) && event.getBlock().getType() == Material.IRON_ORE || event.getBlock().getType() == Material.DEEPSLATE_IRON_ORE) {
             event.getPlayer().getWorld().dropItemNaturally(event.getBlock().getLocation(), new ItemStack(Material.RAW_IRON));
         }
     }

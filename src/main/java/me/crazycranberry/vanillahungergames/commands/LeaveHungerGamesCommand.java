@@ -11,14 +11,14 @@ import org.jetbrains.annotations.NotNull;
 
 import static me.crazycranberry.vanillahungergames.managers.HungerGamesParticipantManager.getParticipant;
 import static me.crazycranberry.vanillahungergames.managers.HungerGamesWorldManager.hungerGamesWorld;
+import static me.crazycranberry.vanillahungergames.managers.HungerGamesWorldManager.isInHungerGamesWorld;
 
 public class LeaveHungerGamesCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (sender instanceof Player && command.getName().equalsIgnoreCase("hgleave")) {
             Player p = (Player) sender;
-            World hgWorld = hungerGamesWorld();
-            if (hgWorld == null || !p.getWorld().equals(hgWorld)) {
+            if (!isInHungerGamesWorld(p.getWorld())) {
                 p.sendMessage("You're not in a tournament, how could you leave it?");
             } else {
                 p.sendMessage("Leaving the hunger games...");

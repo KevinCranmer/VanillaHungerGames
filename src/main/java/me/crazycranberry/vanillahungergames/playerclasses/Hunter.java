@@ -18,7 +18,7 @@ import static me.crazycranberry.vanillahungergames.VanillaHungerGames.getPlugin;
 import static me.crazycranberry.vanillahungergames.commands.ClassInfoCommand.CLASS_INFO_CHAT_COLOR;
 import static me.crazycranberry.vanillahungergames.customitems.HuntingCompass.getPlayersHuntingCompassMeta;
 import static me.crazycranberry.vanillahungergames.managers.HungerGamesParticipantManager.tournamentParticipants;
-import static me.crazycranberry.vanillahungergames.managers.HungerGamesWorldManager.hungerGamesWorld;
+import static me.crazycranberry.vanillahungergames.managers.HungerGamesWorldManager.isInHungerGamesWorld;
 
 public class Hunter extends PlayerClassWithRecurringTasks implements PlayerClass {
     Plugin plugin;
@@ -51,7 +51,7 @@ public class Hunter extends PlayerClassWithRecurringTasks implements PlayerClass
         BukkitScheduler scheduler = Bukkit.getScheduler();
         addTask(scheduler.runTaskTimer(plugin, () -> {
             for (Participant p : tournamentParticipants()) {
-                if(p.getPlayer().getWorld().equals(hungerGamesWorld()) && isCorrectClass(p.getPlayer())) {
+                if(isInHungerGamesWorld(p.getPlayer().getWorld()) && isCorrectClass(p.getPlayer())) {
                     CompassMeta compassMeta = getPlayersHuntingCompassMeta(p.getPlayer());
                     if (compassMeta != null &&
                             compassMeta.getLodestone() != null &&

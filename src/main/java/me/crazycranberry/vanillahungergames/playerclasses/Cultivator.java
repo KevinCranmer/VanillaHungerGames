@@ -11,7 +11,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import java.util.List;
 import java.util.Objects;
 
-import static me.crazycranberry.vanillahungergames.managers.HungerGamesWorldManager.hungerGamesWorld;
+import static me.crazycranberry.vanillahungergames.managers.HungerGamesWorldManager.isInHungerGamesWorld;
 
 public class Cultivator implements PlayerClass {
 
@@ -45,7 +45,7 @@ public class Cultivator implements PlayerClass {
 
     @EventHandler
     private void growPlant(BlockPlaceEvent event) {
-        if(isCorrectClass(event.getPlayer()) && plants.contains(event.getBlockPlaced().getType()) && event.getBlockPlaced().getWorld().equals(hungerGamesWorld())) {
+        if(isCorrectClass(event.getPlayer()) && plants.contains(event.getBlockPlaced().getType()) && isInHungerGamesWorld(event.getBlockPlaced().getWorld())) {
             if (event.getBlockPlaced().getType().equals(Material.TORCHFLOWER_CROP)) {
                 event.getBlockPlaced().setType(Material.TORCHFLOWER);
             } else if (event.getBlockPlaced().getBlockData() instanceof Ageable) {
