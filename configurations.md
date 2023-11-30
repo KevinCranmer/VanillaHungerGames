@@ -35,3 +35,18 @@ commands_to_run_after_match:
 - Specify your Hunger Games lobby world name here. Only relevant if `pre_game_lobby.use` is `true`.
 - If this field is its default value while `pre_game_lobby.use` is `true`, a simple bedrock box world will be used as the lobby.
 - Default: `hg_default_world`
+
+**min_players_to_start**
+- The number of players that must join the Hunger Games before the Pre-Game Countdown begins.
+- Value must be above 0
+- Default: `1`
+
+**pre_game_countdown.minutes**
+- Together with `pre_game_countdown.seconds`, this represents the amount of time between when `min_players_to_start` have joined the Hunger Games and when the Hunger Games actually starts.
+- Value must be above 0
+- Default: `2`
+
+**pre_game_countdown.seconds**
+- Together with `pre_game_countdown.minutes`, this represents the amount of time between when `min_players_to_start` have joined the Hunger Games and when the Hunger Games actually starts.
+- Value must be between 0 and 59
+- Default: `0`

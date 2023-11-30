@@ -26,7 +26,7 @@ import static org.bukkit.Bukkit.getServer;
 public class HungerGamesManager implements Listener {
     private static List<HungerGamesEvent> events;
     private int eventIndex = 0;
-    private static boolean playerHasJoined = false;
+    private static boolean minPlayersHaveJoined = false;
     private static boolean tournamentEnded = false;
     private static boolean tournamentInProgress = false;
     private static Player winner;
@@ -61,7 +61,7 @@ public class HungerGamesManager implements Listener {
     @EventHandler
     void onTournamentCompleted(HungerGamesCompletedEvent event) {
         eventIndex = 0;
-        playerHasJoined = false;
+        minPlayersHaveJoined = false;
         tournamentEnded = true;
         tournamentInProgress = false;
     }
@@ -120,16 +120,23 @@ public class HungerGamesManager implements Listener {
     @EventHandler
     void onHungerGamesWorldCreate(HungerGamesWorldCreatedEvent event) {
         eventIndex = 0;
-        playerHasJoined = false;
+        minPlayersHaveJoined = false;
         tournamentEnded = false;
         tournamentInProgress = false;
     }
 
     @EventHandler
     void onPlayerJoinTournament(ParticipantJoinTournamentEvent event) {
-        if (!playerHasJoined) {
-            playerHasJoined = true;
+        int numAttendees = tournamentParticipants().size();
+        int minPlayersToStart = getPlugin().vanillaHungerGamesConfig().minPlayersToStart();
+        int diff = minPlayersToStart - numAttendees;
+        if (!minPlayersHaveJoined && numAttendees >= minPlayersToStart) {
+            minPlayersHaveJoined = true;
+            //Force us to load new events in case someone changed a configuration
+            events = null;
             Bukkit.getPluginManager().callEvent(events().get(eventIndex++));
+        } else if (!minPlayersHaveJoined) {
+            broadcastToHungerGamesParticipants(String.format("Waiting for %s more player%s before starting", diff, diff == 1 ? "" : "s"));
         }
     }
 

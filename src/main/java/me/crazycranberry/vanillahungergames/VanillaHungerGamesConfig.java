@@ -18,6 +18,9 @@ public class VanillaHungerGamesConfig {
     private boolean requireAdminToCreateGames;
     private boolean usePreGameLobby;
     private String preGameLobbyWorldName;
+    private int minPlayersToStart;
+    private int preGameCountdownMinutes;
+    private int preGameCountdownSeconds;
 
     public VanillaHungerGamesConfig(YamlConfiguration config) {
         originalConfig = loadOriginalConfig("vanilla_hunger_games.yml");
@@ -50,6 +53,33 @@ public class VanillaHungerGamesConfig {
         requireAdminToCreateGames = config.getBoolean("require_admin_to_create", true);
         usePreGameLobby = config.getBoolean("pre_game_lobby.use", false);
         preGameLobbyWorldName = config.getString("pre_game_lobby.world_name", PREGAME_LOBBY_DEFAULT_NAME).trim();
+        minPlayersToStart = validateMinPlayersToStart(config.getInt("min_players_to_start", originalConfig.getInt("min_players_to_start")));
+        preGameCountdownMinutes = validatePreGameCountdownMinutes(config.getInt("pre_game_countdown.minutes", originalConfig.getInt("pre_game_countdown.minutes")));
+        preGameCountdownSeconds = validatePreGameCountdownSeconds(config.getInt("pre_game_countdown.seconds", originalConfig.getInt("pre_game_countdown.seconds")));
+    }
+
+    private int validateMinPlayersToStart(int configValue) {
+        if (configValue < 0) {
+            logger().warning("The min_players_to_start value was less than 1... Defaulting to 1.");
+            return 1;
+        }
+        return configValue;
+    }
+
+    private int validatePreGameCountdownMinutes(int configValue) {
+        if (configValue < 0) {
+            logger().warning("The pre_game_countdown.minutes value was less than 0... Defaulting to 2.");
+            return 2;
+        }
+        return configValue;
+    }
+
+    private int validatePreGameCountdownSeconds(int configValue) {
+        if (configValue < 0 || configValue > 59) {
+            logger().warning("The pre_game_countdown.seconds value was less than 0 or greater than 59... Defaulting to 0.");
+            return 0;
+        }
+        return configValue;
     }
 
     public List<String> commandsToRunAfterMatch() {
@@ -70,5 +100,17 @@ public class VanillaHungerGamesConfig {
 
     public String preGameLobbyWorldName() {
         return preGameLobbyWorldName;
+    }
+
+    public int preGameCountdownMinutes() {
+        return preGameCountdownMinutes;
+    }
+
+    public int preGameCountdownSeconds() {
+        return preGameCountdownSeconds;
+    }
+
+    public int minPlayersToStart() {
+        return minPlayersToStart;
     }
 }
