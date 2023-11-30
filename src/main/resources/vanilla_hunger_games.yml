@@ -1,6 +1,10 @@
 commands_to_run_after_match:
 allow_spectate_teleporting: true
 require_admin_to_create: true
+min_players_to_start: 1
+pre_game_countdown:
+  minutes: 2
+  seconds: 0
 pre_game_lobby:
   use: false
   world_name: hg_default_world
