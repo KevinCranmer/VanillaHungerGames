@@ -50,3 +50,33 @@ commands_to_run_after_match:
 - Together with `pre_game_countdown.minutes`, this represents the amount of time between when `min_players_to_start` have joined the Hunger Games and when the Hunger Games actually starts.
 - Value must be between 0 and 59
 - Default: `0`
+
+**chests.use_vanilla_items**
+- `true` if you want the world generated chests to use the default vanilla chest generation. `false` if you want to override what can be in the chest.
+- Default: `true`
+
+**chests.custom_item_spawns**
+- This is a list of items you want to be randomly appearing in chests if you've set `chests.use_vanilla_items` to `false`.
+- Each item has 4 pieces:
+    - `name`: [String] The name of the item's material. Must match an Enum Constant from this list: [Material.html](https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html)
+    - `chance`: [Double] The chance that an item shows up in a chest. Can be anywhere between 0.0 and 1.0.
+    - `min`: [Integer] If the item appears in the chest, what's the lower limit for how many of this item should appear?
+    - `min`: [Integer] If the item appears in the chest, what's the upper limit for how many of this item should appear?
+- Default: empty
+- Example: 
+```
+chests:
+    custom_item_spawns:
+        - name: LEATHER_HELMET
+          chance: 0.8
+          min: 1
+          max: 2
+        - name: LEATHER
+          chance: 0.5
+          min: 4
+          max: 12
+        - name: DIAMOND_SWORD
+          chance: 0.05
+          min: 1
+          max: 1
+```

@@ -4,7 +4,9 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Objects;
 
 import static me.crazycranberry.vanillahungergames.VanillaHungerGames.getPlugin;
 import static me.crazycranberry.vanillahungergames.VanillaHungerGames.logger;
@@ -21,6 +23,8 @@ public class VanillaHungerGamesConfig {
     private int minPlayersToStart;
     private int preGameCountdownMinutes;
     private int preGameCountdownSeconds;
+    private boolean useVanillaItemsInChests;
+    private List<CustomItemSpawn> customItemSpawnsInChests;
 
     public VanillaHungerGamesConfig(YamlConfiguration config) {
         originalConfig = loadOriginalConfig("vanilla_hunger_games.yml");
@@ -56,6 +60,8 @@ public class VanillaHungerGamesConfig {
         minPlayersToStart = validateMinPlayersToStart(config.getInt("min_players_to_start", originalConfig.getInt("min_players_to_start")));
         preGameCountdownMinutes = validatePreGameCountdownMinutes(config.getInt("pre_game_countdown.minutes", originalConfig.getInt("pre_game_countdown.minutes")));
         preGameCountdownSeconds = validatePreGameCountdownSeconds(config.getInt("pre_game_countdown.seconds", originalConfig.getInt("pre_game_countdown.seconds")));
+        useVanillaItemsInChests = config.getBoolean("chests.use_vanilla_items", originalConfig.getBoolean("chests.use_vanilla_items"));
+        customItemSpawnsInChests = config.getList("chests.custom_item_spawns", List.of()).stream().map(c -> CustomItemSpawn.fromYaml((LinkedHashMap<String, ?>) c)).filter(Objects::nonNull).toList();
     }
 
     private int validateMinPlayersToStart(int configValue) {
@@ -112,5 +118,13 @@ public class VanillaHungerGamesConfig {
 
     public int minPlayersToStart() {
         return minPlayersToStart;
+    }
+
+    public boolean useVanillaItemsInChests() {
+        return useVanillaItemsInChests;
+    }
+
+    public List<CustomItemSpawn> customItemSpawnsInChests() {
+        return customItemSpawnsInChests;
     }
 }
