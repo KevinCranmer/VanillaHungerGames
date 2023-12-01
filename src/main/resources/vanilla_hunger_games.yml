@@ -8,3 +8,6 @@ pre_game_countdown:
 pre_game_lobby:
   use: false
   world_name: hg_default_world
+chests:
+  use_vanilla_items: true
+  custom_item_spawns:

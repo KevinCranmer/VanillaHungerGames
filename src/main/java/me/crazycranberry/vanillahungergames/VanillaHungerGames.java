@@ -9,6 +9,7 @@ import me.crazycranberry.vanillahungergames.commands.LeaveHungerGamesCommand;
 import me.crazycranberry.vanillahungergames.commands.RefreshConfigCommand;
 import me.crazycranberry.vanillahungergames.commands.SpectateTeleportCommand;
 import me.crazycranberry.vanillahungergames.managers.EnchantmentManager;
+import me.crazycranberry.vanillahungergames.managers.HungerGamesChestsManager;
 import me.crazycranberry.vanillahungergames.managers.HungerGamesManager;
 import me.crazycranberry.vanillahungergames.managers.HungerGamesParticipantManager;
 import me.crazycranberry.vanillahungergames.managers.HungerGamesWorldManager;
@@ -34,9 +35,9 @@ public final class VanillaHungerGames extends JavaPlugin implements Listener {
         plugin = this;
         logger = this.getLogger();
         getServer().getPluginManager().registerEvents(this, this);
+        refreshConfigs();
         registerManagers();
         registerCommands();
-        refreshConfigs();
     }
 
     @Override
@@ -53,6 +54,7 @@ public final class VanillaHungerGames extends JavaPlugin implements Listener {
     }
 
     private void registerManagers() {
+        getServer().getPluginManager().registerEvents(new HungerGamesChestsManager(), this);
         getServer().getPluginManager().registerEvents(new HungerGamesManager(), this);
         getServer().getPluginManager().registerEvents(new HungerGamesParticipantManager(), this);
         getServer().getPluginManager().registerEvents(new HungerGamesWorldManager(), this);

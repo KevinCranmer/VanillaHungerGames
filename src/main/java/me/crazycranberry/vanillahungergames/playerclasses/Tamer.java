@@ -25,7 +25,7 @@ public class Tamer implements PlayerClass {
 
     @EventHandler
     private void onTameAttempt(PlayerInteractEntityEvent event) {
-        if (isCorrectClass(event.getPlayer()) && isInHungerGamesWorld(event.getPlayer().getWorld()) && event.getRightClicked().getType() == EntityType.WOLF && event.getPlayer().getInventory().getItemInMainHand().getType() == Material.BONE) {
+        if (isCorrectClass(event.getPlayer()) && isInHungerGamesWorld(event.getPlayer().getWorld()) && event.getRightClicked().getType() == EntityType.WOLF && event.getPlayer().getInventory().getItemInMainHand().getType() == Material.BONE && !((Wolf) event.getRightClicked()).isTamed()) {
             Wolf wolf = (Wolf) event.getRightClicked();
             wolf.setOwner(event.getPlayer());
             wolf.setTamed(true);
