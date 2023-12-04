@@ -24,8 +24,8 @@ public class HungerGamesChestsManager implements Listener {
 
     @EventHandler
     private void openChest(PlayerInteractEvent event) {
-        if (event.getClickedBlock().getType().equals(Material.CHEST) && isInHungerGamesWorld(event.getClickedBlock().getWorld()) && !getPlugin().vanillaHungerGamesConfig().useVanillaItemsInChests()) {
-            if (!event.getClickedBlock().getState().getMetadata(playerCreatedChestCustomName).stream().anyMatch(m -> "true".equals(m.value()))) {
+        if (event.getClickedBlock() != null && event.getClickedBlock().getType().equals(Material.CHEST) && isInHungerGamesWorld(event.getClickedBlock().getWorld()) && !getPlugin().vanillaHungerGamesConfig().useVanillaItemsInChests()) {
+            if (event.getClickedBlock().getState().getMetadata(playerCreatedChestCustomName).stream().noneMatch(m -> "true".equals(m.value()))) {
                 wipeChest((Chest) event.getClickedBlock().getState());
                 if (tournamentInProgress()) {
                     setChestContents((Chest) event.getClickedBlock().getState());
@@ -53,7 +53,7 @@ public class HungerGamesChestsManager implements Listener {
         Inventory inv = chest.getInventory();
         List<Integer> availableChestSlots = new ArrayList<>(IntStream.range(0, inv.getSize()).boxed().toList());
         for (CustomItemSpawn customItemSpawn : getPlugin().vanillaHungerGamesConfig().customItemSpawnsInChests()) {
-            Double rand = Math.random();
+            double rand = Math.random();
             if (rand < customItemSpawn.chance()) {
                 int quantity = (int)(Math.random() * (customItemSpawn.max() - customItemSpawn.min())) + customItemSpawn.min();
                 for (int i = quantity; i > 0; i = i - customItemSpawn.material().getMaxStackSize()) {
