@@ -8,7 +8,7 @@ import me.crazycranberry.vanillahungergames.commands.JoinHungerGamesCommand;
 import me.crazycranberry.vanillahungergames.commands.LeaveHungerGamesCommand;
 import me.crazycranberry.vanillahungergames.commands.RefreshConfigCommand;
 import me.crazycranberry.vanillahungergames.commands.SpectateTeleportCommand;
-import me.crazycranberry.vanillahungergames.managers.EnchantmentManager;
+import me.crazycranberry.vanillahungergames.customenchantments.BigKnockBack;
 import me.crazycranberry.vanillahungergames.managers.HungerGamesChestsManager;
 import me.crazycranberry.vanillahungergames.managers.HungerGamesManager;
 import me.crazycranberry.vanillahungergames.managers.HungerGamesParticipantManager;
@@ -17,9 +17,12 @@ import me.crazycranberry.vanillahungergames.managers.PlayerClassManager;
 import me.crazycranberry.vanillahungergames.managers.ScoreboardManager;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import static me.crazycranberry.vanillahungergames.utils.FileUtils.loadConfig;
@@ -28,6 +31,8 @@ public final class VanillaHungerGames extends JavaPlugin implements Listener {
     private static Logger logger;
     private static VanillaHungerGames plugin;
     private VanillaHungerGamesConfig config;
+
+    private static Map<String, Enchantment> customEnchantments = new HashMap<>();
 
     @Override
     public void onEnable() {
@@ -38,6 +43,19 @@ public final class VanillaHungerGames extends JavaPlugin implements Listener {
         refreshConfigs();
         registerManagers();
         registerCommands();
+        customEnchantments = registerCustomEnchantments();
+    }
+
+    private Map<String, Enchantment> registerCustomEnchantments() {
+        BigKnockBack bigKnockBack = new BigKnockBack();
+        getServer().getPluginManager().registerEvents(bigKnockBack, this);
+        customEnchantments.put(bigKnockBack.getKey().getKey(), bigKnockBack);
+        return customEnchantments;
+    }
+
+    public static Enchantment getCustomEnchantment(String name) {
+        Enchantment enchantment = customEnchantments.get(name);
+        return enchantment == null ? null : enchantment;
     }
 
     @Override
@@ -58,7 +76,6 @@ public final class VanillaHungerGames extends JavaPlugin implements Listener {
         getServer().getPluginManager().registerEvents(new HungerGamesManager(), this);
         getServer().getPluginManager().registerEvents(new HungerGamesParticipantManager(), this);
         getServer().getPluginManager().registerEvents(new HungerGamesWorldManager(), this);
-        getServer().getPluginManager().registerEvents(new EnchantmentManager(), this);
         getServer().getPluginManager().registerEvents(new PlayerClassManager(), this);
         getServer().getPluginManager().registerEvents(new ScoreboardManager(), this);
     }
