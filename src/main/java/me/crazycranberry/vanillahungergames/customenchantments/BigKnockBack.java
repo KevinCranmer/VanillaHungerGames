@@ -1,6 +1,5 @@
 package me.crazycranberry.vanillahungergames.customenchantments;
 
-import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentTarget;
@@ -9,24 +8,26 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 import static me.crazycranberry.vanillahungergames.VanillaHungerGames.getPlugin;
-import static me.crazycranberry.vanillahungergames.managers.EnchantmentManager.getEnchantmentObject;
 
 public class BigKnockBack extends Enchantment implements Listener {
 
     public BigKnockBack() {
-        super(new NamespacedKey(getPlugin(), "bigknockback"));
+        super();
     }
 
     @EventHandler
     private void knockThemBack(EntityDamageByEntityEvent event) {
         if (event.getDamager() instanceof Player) {
             Player damager = (Player) event.getDamager();
-            if (damager.getInventory().getItemInMainHand().getEnchantments().containsKey(Enchantment.getByKey(new NamespacedKey(getPlugin(), "bigknockback")))) {
-                int enchantmentLevel = damager.getInventory().getItemInMainHand().getEnchantments().get(getEnchantmentObject("BigKnockBack"));
+            ItemMeta meta = damager.getInventory().getItemInMainHand().getItemMeta();
+            if (meta != null && meta.getPersistentDataContainer().has(this.getKey())) {
+                int enchantmentLevel = meta.getPersistentDataContainer().get(this.getKey(), PersistentDataType.INTEGER);
                 Vector knockBackVector = damager.getLocation().getDirection().multiply(enchantmentLevel);
                 if (knockBackVector.getY() < enchantmentLevel * 0.4) {
                     knockBackVector.setY(enchantmentLevel * 0.4);
@@ -76,5 +77,11 @@ public class BigKnockBack extends Enchantment implements Listener {
     @Override
     public boolean canEnchantItem(@NotNull ItemStack item) {
         return true;
+    }
+
+    @NotNull
+    @Override
+    public NamespacedKey getKey() {
+        return new NamespacedKey(getPlugin(), "bigknockback");
     }
 }
