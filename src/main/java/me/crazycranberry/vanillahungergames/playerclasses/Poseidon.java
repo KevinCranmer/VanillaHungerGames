@@ -56,7 +56,7 @@ public class Poseidon extends PlayerClassWithRecurringTasks implements PlayerCla
         addTask(scheduler.runTaskTimer(plugin, () -> {
             for (Participant p : tournamentParticipants()) {
                 if (isInHungerGamesWorld(p.getPlayer().getWorld()) && isCorrectClass(p.getPlayer()) && p.getPlayer().isInWater()) {
-                    p.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 20 * 3, 2));
+                    p.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.HASTE, 20 * 3, 2));
                 }
             }
 

@@ -84,4 +84,10 @@ public class BigKnockBack extends Enchantment implements Listener {
     public NamespacedKey getKey() {
         return new NamespacedKey(getPlugin(), "bigknockback");
     }
+
+    @NotNull
+    @Override
+    public String getTranslationKey() {
+        return "Big Knock Back";
+    }
 }

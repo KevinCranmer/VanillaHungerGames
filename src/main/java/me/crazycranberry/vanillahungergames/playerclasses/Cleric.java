@@ -116,7 +116,7 @@ public class Cleric extends PlayerClassWithRecurringTasks implements PlayerClass
     private void summonFireWorks(Location location) {
         for (Vector v : fireworkAdditionVector) {
             Location spawnLoc = location.clone().add(v);
-            Firework fw = (Firework) spawnLoc.getWorld().spawnEntity(spawnLoc, EntityType.FIREWORK);
+            Firework fw = (Firework) spawnLoc.getWorld().spawnEntity(spawnLoc, EntityType.FIREWORK_ROCKET);
             FireworkMeta fwm = fw.getFireworkMeta();
             fwm.setPower(1);
             fwm.addEffect(FireworkEffect.builder().withColor(Color.RED).flicker(true).build());

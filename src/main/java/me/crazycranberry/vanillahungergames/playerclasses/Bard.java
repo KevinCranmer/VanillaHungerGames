@@ -108,13 +108,13 @@ public class Bard implements PlayerClass {
     private void applyBardEffect(Player bard, String hornType) {
         switch (hornType) {
             case "ponder_goat_horn":
-                bard.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 20 * HORN_BUFF_DURATION_SECONDS, 1));
+                bard.addPotionEffect(new PotionEffect(PotionEffectType.HASTE, 20 * HORN_BUFF_DURATION_SECONDS, 1));
                 break;
             case "sing_goat_horn":
                 bard.setHealth(Math.min(bard.getHealth() + 1.5, bard.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
                 break;
             case "yearn_goat_horn":
-                bard.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 20 * HORN_BUFF_DURATION_SECONDS, 1));
+                bard.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, 20 * HORN_BUFF_DURATION_SECONDS, 1));
                 break;
             case "dream_goat_horn":
                 bard.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20 * HORN_BUFF_DURATION_SECONDS, 1));
