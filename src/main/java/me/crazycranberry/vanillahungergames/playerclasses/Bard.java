@@ -38,6 +38,11 @@ public class Bard implements PlayerClass {
         return "Bards get " + HORN_TYPES.size() + " different Goat Horns that grant them various effects.";
     }
 
+    @Override
+    public Material menuIcon() {
+        return Material.GOAT_HORN;
+    }
+
     @EventHandler
     private void tournamentStarted(TournamentStartedEvent event) {
         for (Participant p : tournamentParticipants()) {

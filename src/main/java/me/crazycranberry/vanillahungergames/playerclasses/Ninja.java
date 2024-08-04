@@ -83,6 +83,11 @@ public class Ninja implements PlayerClass {
         return "Ninja's get usable items that allow them to double jump and dash attack. Note: The dash attack is blockable with a shield.";
     }
 
+    @Override
+    public Material menuIcon() {
+        return Material.RABBIT_FOOT;
+    }
+
     @EventHandler
     private void tournamentStarted(TournamentStartedEvent event) {
         for (Participant p : tournamentParticipants()) {

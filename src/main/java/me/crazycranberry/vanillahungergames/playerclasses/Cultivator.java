@@ -43,6 +43,11 @@ public class Cultivator implements PlayerClass {
         return "Cultivators instantly grow plants.";
     }
 
+    @Override
+    public Material menuIcon() {
+        return Material.WHEAT;
+    }
+
     @EventHandler
     private void growPlant(BlockPlaceEvent event) {
         if(isCorrectClass(event.getPlayer()) && plants.contains(event.getBlockPlaced().getType()) && isInHungerGamesWorld(event.getBlockPlaced().getWorld())) {

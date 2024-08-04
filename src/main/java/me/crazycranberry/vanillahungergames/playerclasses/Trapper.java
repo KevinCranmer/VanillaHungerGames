@@ -45,6 +45,11 @@ public class Trapper extends PlayerClassWithRecurringTasks implements PlayerClas
         return "Trappers get " + NUM_TRAPS + " grass blocks to start. If another player walks within 2 blocks of these grass blocks, the blocks will vanish.";
     }
 
+    @Override
+    public Material menuIcon() {
+        return Material.OAK_TRAPDOOR;
+    }
+
     @EventHandler
     private void anyTrappers(TournamentStartedEvent event){
         for (Participant p : tournamentParticipants()) {

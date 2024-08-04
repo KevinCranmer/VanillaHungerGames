@@ -31,6 +31,11 @@ public class Necromancer implements PlayerClass {
         return "Necromancer's summon " + NUM_SKELETONS + " skeleton to help them battle. Summon a skeleton by killing an entity.";
     }
 
+    @Override
+    public Material menuIcon() {
+        return Material.IRON_HOE;
+    }
+
     @EventHandler
     private void entityKilled(EntityDeathEvent event) {
         Player p = event.getEntity().getKiller();

@@ -21,6 +21,11 @@ public class Archer implements PlayerClass {
         return "Archer's start the game with a bow and " + NUM_ARROWS + " arrows.";
     }
 
+    @Override
+    public Material menuIcon() {
+        return Material.BOW;
+    }
+
     @EventHandler
     private void tournamentStarted(TournamentStartedEvent event) {
         for (Participant p : tournamentParticipants()) {

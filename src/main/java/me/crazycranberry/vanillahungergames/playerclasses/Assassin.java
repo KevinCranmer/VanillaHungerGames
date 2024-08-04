@@ -30,6 +30,11 @@ public class Assassin implements PlayerClass{
         return "Assassins can go invisible for " + INVISIBLE_DURATION_SEC + " seconds every " + INVISIBLE_COOLDOWN_SEC + " seconds.";
     }
 
+    @Override
+    public Material menuIcon() {
+        return Material.IRON_SWORD;
+    }
+
     @EventHandler
     private void tournamentStarted(TournamentStartedEvent event) {
         for (Participant p : tournamentParticipants()) {

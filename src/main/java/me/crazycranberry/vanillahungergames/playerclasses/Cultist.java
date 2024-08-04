@@ -56,6 +56,11 @@ public class Cultist extends PlayerClassWithRecurringTasks implements PlayerClas
         return "Cultists try to sacrifice (kill) " + NUM_SACRIFICES + " Living Entities to complete their ritual.";
     }
 
+    @Override
+    public Material menuIcon() {
+        return Material.WITHER_SKELETON_SKULL;
+    }
+
     @EventHandler
     private void entitySacrificed(EntityDeathEvent event) {
         if (event.getEntity().getKiller() != null && isCorrectClass(event.getEntity().getKiller())) {

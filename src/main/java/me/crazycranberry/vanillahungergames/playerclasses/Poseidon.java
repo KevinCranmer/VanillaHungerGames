@@ -3,6 +3,7 @@ package me.crazycranberry.vanillahungergames.playerclasses;
 import me.crazycranberry.vanillahungergames.Participant;
 import me.crazycranberry.vanillahungergames.events.TournamentStartedEvent;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
@@ -29,6 +30,11 @@ public class Poseidon extends PlayerClassWithRecurringTasks implements PlayerCla
     @Override
     public String getInfo() {
         return "Poseidon move/mine faster in water and their breath slowly regenerates (you can still drown, I couldn't figure out how to code respiration without a helmet).";
+    }
+
+    @Override
+    public Material menuIcon() {
+        return Material.WATER_BUCKET;
     }
 
     @EventHandler

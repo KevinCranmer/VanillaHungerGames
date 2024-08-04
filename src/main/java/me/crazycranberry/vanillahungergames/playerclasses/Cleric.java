@@ -56,6 +56,11 @@ public class Cleric extends PlayerClassWithRecurringTasks implements PlayerClass
         return "Clerics have the ability to heal themselves and nearby players.";
     }
 
+    @Override
+    public Material menuIcon() {
+        return Material.GOLDEN_APPLE;
+    }
+
     @EventHandler
     private void tournamentStarted(TournamentStartedEvent event) {
         boolean clericExists = false;

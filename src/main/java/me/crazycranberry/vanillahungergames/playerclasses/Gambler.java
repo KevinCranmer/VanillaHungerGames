@@ -1,6 +1,7 @@
 package me.crazycranberry.vanillahungergames.playerclasses;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -56,6 +57,11 @@ public class Gambler implements PlayerClass {
     @Override
     public String getInfo() {
         return "Gambler's get a random potion effect on every player kill (weighted to be more likely a positive one).";
+    }
+
+    @Override
+    public Material menuIcon() {
+        return Material.POTION;
     }
 
     @EventHandler

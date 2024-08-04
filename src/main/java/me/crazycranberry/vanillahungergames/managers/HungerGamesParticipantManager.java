@@ -17,19 +17,27 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static me.crazycranberry.vanillahungergames.VanillaHungerGames.getPlugin;
 import static me.crazycranberry.vanillahungergames.VanillaHungerGames.logger;
+import static me.crazycranberry.vanillahungergames.commands.ClassCommand.CLASS_MENU_NAME_PREFIX;
+import static me.crazycranberry.vanillahungergames.commands.ClassCommand.MENU_KEY;
 import static me.crazycranberry.vanillahungergames.customitems.HuntingCompass.pointCompassToNearestPlayer;
 import static me.crazycranberry.vanillahungergames.managers.HungerGamesManager.tournamentInProgress;
 import static me.crazycranberry.vanillahungergames.managers.HungerGamesWorldManager.hungerGamesWorld;
@@ -213,6 +221,20 @@ public class HungerGamesParticipantManager implements Listener {
     public void onTeleport(PlayerTeleportEvent event) {
         if (isTournamentParticipant(event.getPlayer()) && isInHungerGamesWorld(event.getFrom().getWorld()) && !isInHungerGamesWorld(event.getTo().getWorld())) {
             Bukkit.getPluginManager().callEvent(new ParticipantLeaveTournamentEvent(getParticipant(event.getPlayer()), false));
+        } else if (isTournamentParticipant(event.getPlayer()) && !isInHungerGamesWorld(event.getFrom().getWorld()) && isInHungerGamesWorld(event.getTo().getWorld())) {
+            Bukkit.getScheduler().runTaskLater(getPlugin(), () -> event.getPlayer().performCommand("hgclass"), 50);
+        }
+    }
+    @EventHandler
+    private void onMenuInteract(InventoryClickEvent event) {
+        if (event.getView().getTitle().startsWith(CLASS_MENU_NAME_PREFIX)) {
+            event.setCancelled(true);
+            event.getWhoClicked().closeInventory();
+            Optional.ofNullable(event.getCurrentItem())
+                .map(ItemStack::getItemMeta)
+                .map(ItemMeta::getPersistentDataContainer)
+                .map(c -> c.get(MENU_KEY, PersistentDataType.STRING))
+                .ifPresent(c -> ((Player) event.getWhoClicked()).performCommand(c));
         }
     }
 

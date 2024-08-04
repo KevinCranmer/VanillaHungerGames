@@ -32,6 +32,11 @@ public class PersonalSpaceGuy implements PlayerClass {
         return "PersonalSpaceGuy start the tourney with a super Knock Back stick. Stay out of my personal space!";
     }
 
+    @Override
+    public Material menuIcon() {
+        return Material.STICK;
+    }
+
     @EventHandler
     public void tournamentStarted(TournamentStartedEvent event) {
         for (Participant p : tournamentParticipants()) {

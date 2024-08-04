@@ -5,6 +5,7 @@ import me.crazycranberry.vanillahungergames.events.TournamentStartedEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.inventory.meta.CompassMeta;
@@ -35,6 +36,11 @@ public class Hunter extends PlayerClassWithRecurringTasks implements PlayerClass
     @Override
     public String getInfo() {
         return String.format("A Hunter's compass %salways%s updates and Hunters get a speed boost while moving in the compasses direction.", ChatColor.ITALIC, CLASS_INFO_CHAT_COLOR);
+    }
+
+    @Override
+    public Material menuIcon() {
+        return Material.COMPASS;
     }
 
     @EventHandler

@@ -1,5 +1,6 @@
 package me.crazycranberry.vanillahungergames.playerclasses;
 
+import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -17,6 +18,11 @@ public class Stomper implements PlayerClass {
     @Override
     public String getInfo() {
         return "Stompers transfer fall damage to nearby Players (or mobs)";
+    }
+
+    @Override
+    public Material menuIcon() {
+        return Material.ANVIL;
     }
 
     @EventHandler

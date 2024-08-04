@@ -1,5 +1,6 @@
 package me.crazycranberry.vanillahungergames.playerclasses;
 
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -17,6 +18,11 @@ public class Barbarian implements PlayerClass {
     @Override
     public String getInfo() {
         return "Barbarian's do more damage the less health they have.";
+    }
+
+    @Override
+    public Material menuIcon() {
+        return Material.WOODEN_AXE;
     }
 
     @EventHandler

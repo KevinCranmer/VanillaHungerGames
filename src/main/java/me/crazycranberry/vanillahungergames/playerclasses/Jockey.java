@@ -16,7 +16,12 @@ public class Jockey implements PlayerClass {
 
     @Override
     public String getInfo() {
-        return "Jockey's start the game with a saddle. Neeeeigh!";
+        return "Jockey's start the game with a saddle and a horse egg. Neeeeigh!";
+    }
+
+    @Override
+    public Material menuIcon() {
+        return Material.SADDLE;
     }
 
     @EventHandler
@@ -24,6 +29,7 @@ public class Jockey implements PlayerClass {
         for (Participant p : tournamentParticipants()) {
             if (isCorrectClass(p.getPlayer())) {
                 p.getPlayer().getInventory().addItem(new ItemStack(Material.SADDLE, 1));
+                p.getPlayer().getInventory().addItem(new ItemStack(Material.HORSE_SPAWN_EGG, 1));
             }
         }
     }

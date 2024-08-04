@@ -23,6 +23,11 @@ public class Tamer implements PlayerClass {
         return "Tamers always successfully tame wolves and start with 3 bones, and 1 wolf egg.";
     }
 
+    @Override
+    public Material menuIcon() {
+        return Material.BONE;
+    }
+
     @EventHandler
     private void onTameAttempt(PlayerInteractEntityEvent event) {
         if (isCorrectClass(event.getPlayer()) && isInHungerGamesWorld(event.getPlayer().getWorld()) && event.getRightClicked().getType() == EntityType.WOLF && event.getPlayer().getInventory().getItemInMainHand().getType() == Material.BONE && !((Wolf) event.getRightClicked()).isTamed()) {

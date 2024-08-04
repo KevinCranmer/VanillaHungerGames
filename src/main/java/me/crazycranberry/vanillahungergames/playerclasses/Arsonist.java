@@ -32,6 +32,11 @@ public class Arsonist implements PlayerClass {
         return "Arsonists get guaranteed TNT & redstone material drops from mobs. TNT go boom.";
     }
 
+    @Override
+    public Material menuIcon() {
+        return Material.FLINT_AND_STEEL;
+    }
+
     @EventHandler
     private void tournamentStarted(TournamentStartedEvent event) {
         for (Participant p : tournamentParticipants()) {

@@ -37,6 +37,11 @@ public class Snowman extends PlayerClassWithRecurringTasks implements PlayerClas
         return "Snowmen run faster on snow, and snowballs now deal damage.";
     }
 
+    @Override
+    public Material menuIcon() {
+        return Material.SNOWBALL;
+    }
+
     @EventHandler
     private void anySnowman(TournamentStartedEvent event){
         for (Participant p : tournamentParticipants()) {
