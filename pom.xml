@@ -62,16 +62,6 @@
             <id>sonatype</id>
             <url>https://oss.sonatype.org/content/groups/public/</url>
         </repository>
-        <repository>
-            <id>magmaguy-repo-releases</id>
-            <name>MagmaGuy's Repository</name>
-            <url>https://repo.magmaguy.com/releases</url>
-        </repository>
-        <repository>
-            <id>magmaguy-repo-snapshots</id>
-            <name>MagmaGuy's Snapshots</name>
-            <url>https://repo.magmaguy.com/snapshots</url>
-        </repository>
     </repositories>
 
     <dependencies>
@@ -86,11 +76,6 @@
             <artifactId>annotations</artifactId>
             <version>24.0.0</version>
             <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.magmaguy</groupId>
-            <artifactId>EliteMobs</artifactId>
-            <version>9.1.9</version>
         </dependency>
     </dependencies>
 </project>
