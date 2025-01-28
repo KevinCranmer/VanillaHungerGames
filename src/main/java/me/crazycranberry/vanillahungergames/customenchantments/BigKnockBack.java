@@ -12,10 +12,12 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import static me.crazycranberry.vanillahungergames.VanillaHungerGames.getPlugin;
 
 public class BigKnockBack extends Enchantment implements Listener {
+    private static final NamespacedKey key = new NamespacedKey(getPlugin(), "bigknockback");
 
     public BigKnockBack() {
         super();
@@ -82,12 +84,29 @@ public class BigKnockBack extends Enchantment implements Listener {
     @NotNull
     @Override
     public NamespacedKey getKey() {
-        return new NamespacedKey(getPlugin(), "bigknockback");
+        return key;
     }
 
     @NotNull
     @Override
     public String getTranslationKey() {
         return "Big Knock Back";
+    }
+
+    @NotNull
+    @Override
+    public NamespacedKey getKeyOrThrow() {
+        return getKey();
+    }
+
+    @Nullable
+    @Override
+    public NamespacedKey getKeyOrNull() {
+        return getKey();
+    }
+
+    @Override
+    public boolean isRegistered() {
+        return true;
     }
 }

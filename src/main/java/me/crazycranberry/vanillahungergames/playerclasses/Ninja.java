@@ -213,7 +213,7 @@ public class Ninja implements PlayerClass {
     }
 
     private Double findStrongestWeaponDamage(Player player) {
-        Double damage = player.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE).getBaseValue();
+        Double damage = player.getAttribute(Attribute.ATTACK_DAMAGE).getBaseValue();
         for(int i : DASH_ATTACK_POTENTIAL_WEAPON_INDEXES) {
             ItemStack item = player.getInventory().getItem(i);
 

@@ -106,7 +106,7 @@ public class Bard implements PlayerClass {
             case "dream_goat_horn":
                 return Sound.ITEM_GOAT_HORN_SOUND_7;
             default:
-                return Sound.ITEM_GOAT_HORN_PLAY;
+                return Sound.ITEM_GOAT_HORN_SOUND_2;
         }
     }
 
@@ -116,7 +116,7 @@ public class Bard implements PlayerClass {
                 bard.addPotionEffect(new PotionEffect(PotionEffectType.HASTE, 20 * HORN_BUFF_DURATION_SECONDS, 1));
                 break;
             case "sing_goat_horn":
-                bard.setHealth(Math.min(bard.getHealth() + 1.5, bard.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
+                bard.setHealth(Math.min(bard.getHealth() + 1.5, bard.getAttribute(Attribute.MAX_HEALTH).getValue()));
                 break;
             case "yearn_goat_horn":
                 bard.addPotionEffect(new PotionEffect(PotionEffectType.STRENGTH, 20 * HORN_BUFF_DURATION_SECONDS, 1));

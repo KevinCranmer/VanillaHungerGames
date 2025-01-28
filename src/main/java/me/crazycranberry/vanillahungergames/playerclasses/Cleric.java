@@ -103,10 +103,10 @@ public class Cleric extends PlayerClassWithRecurringTasks implements PlayerClass
                 for (Entity e : p.getNearbyEntities(HEALING_RADIUS, HEALING_RADIUS, HEALING_RADIUS)) {
                     if (e instanceof LivingEntity) {
                         LivingEntity entityToBeHealed = (LivingEntity) e;
-                        entityToBeHealed.setHealth(Math.min(entityToBeHealed.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue(), entityToBeHealed.getHealth() + HEAL_AMOUNT_PER_HEAL));
+                        entityToBeHealed.setHealth(Math.min(entityToBeHealed.getAttribute(Attribute.MAX_HEALTH).getValue(), entityToBeHealed.getHealth() + HEAL_AMOUNT_PER_HEAL));
                     }
                 }
-                p.setHealth(Math.min(p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue(), p.getHealth() + HEAL_AMOUNT_PER_HEAL));
+                p.setHealth(Math.min(p.getAttribute(Attribute.MAX_HEALTH).getValue(), p.getHealth() + HEAL_AMOUNT_PER_HEAL));
                 clerics.get(p).decreaseHealthTimeRemaining(((double) TICKS_BETWEEN_HEALS) / 20L);
                 summonFireWorks(p.getLocation());
             } else if (!clerics.get(p).locMatches(p.getLocation())){

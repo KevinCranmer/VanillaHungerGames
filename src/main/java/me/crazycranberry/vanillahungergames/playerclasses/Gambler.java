@@ -82,7 +82,7 @@ public class Gambler implements PlayerClass {
 
     private void applyPossibleInstantEffects(Player gambler, GamblerPotion potion) {
         if (potion.potion().equals(PotionEffectType.INSTANT_HEALTH)) {
-            gambler.setHealth(Math.min(gambler.getHealth() + 8, gambler.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()));
+            gambler.setHealth(Math.min(gambler.getHealth() + 8, gambler.getAttribute(Attribute.MAX_HEALTH).getValue()));
         } else if (potion.potion().equals(PotionEffectType.HEALTH_BOOST)) {
             gambler.setAbsorptionAmount(gambler.getAbsorptionAmount() + 6);
         } else if (potion.potion().equals(PotionEffectType.INSTANT_DAMAGE)) {

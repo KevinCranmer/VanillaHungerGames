@@ -29,7 +29,7 @@ public class Barbarian implements PlayerClass {
     private void onDamage(EntityDamageByEntityEvent event) {
         if (event.getDamager() instanceof Player && isCorrectClass((Player) event.getDamager())) {
             Player barbarian = (Player) event.getDamager();
-            event.setDamage(event.getDamage() * Math.pow(BASE_SCALE, barbarian.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue() - barbarian.getHealth()));
+            event.setDamage(event.getDamage() * Math.pow(BASE_SCALE, barbarian.getAttribute(Attribute.MAX_HEALTH).getValue() - barbarian.getHealth()));
         }
     }
 }
