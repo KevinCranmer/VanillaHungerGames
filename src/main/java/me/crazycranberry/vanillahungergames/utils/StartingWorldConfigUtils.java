@@ -1,5 +1,6 @@
 package me.crazycranberry.vanillahungergames.utils;
 
+import com.magmaguy.elitemobs.adventurersguild.GuildRank;
 import me.crazycranberry.vanillahungergames.Participant;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -84,6 +85,7 @@ public class StartingWorldConfigUtils {
                 e.printStackTrace();
             }
         }
+        GuildRank.setMaxHealth(p);
         deleteStartingWorldConfig(p);
         if (p.getLocation() != destination && shouldTeleport) {
             // For some reason the teleport is slow(?). So try it again if it doesn't work immediately.
