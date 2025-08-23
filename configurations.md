@@ -26,6 +26,10 @@ commands_to_run_after_match:
 - If true then only admins can execute `/hgcreate`.
 - Default: `true`
 
+**locator_bar_enabled**
+- If true then the locator bar is enabled in the hunger games. Defeats the purpose of the compass.
+- Default: `false`
+
 **pre_game_lobby.use**
 - Whether or not players will sit in a lobby world while waiting for the hunger games to start.
 - Set this to true if you don't want players to be able to scout the world ahead of time.
