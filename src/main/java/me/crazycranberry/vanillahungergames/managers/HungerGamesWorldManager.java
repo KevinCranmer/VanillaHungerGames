@@ -110,6 +110,7 @@ public class HungerGamesWorldManager implements Listener {
         WorldCreator God = new WorldCreator(HUNGER_GAMES_WORLD_NAME);
         hungerGamesWorld = God.createWorld();
         hungerGamesWorld.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+        hungerGamesWorld.setGameRule(GameRule.LOCATOR_BAR, getPlugin().vanillaHungerGamesConfig().locatorBarEnabled());
         hungerGamesWorld.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
         maybeGeneratePregameLobby();
         Bukkit.getPluginManager().callEvent(new HungerGamesWorldCreatedEvent());

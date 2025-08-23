@@ -19,6 +19,7 @@ public class VanillaHungerGamesConfig {
     private boolean allowSpectateTeleport;
     private boolean requireAdminToCreateGames;
     private boolean usePreGameLobby;
+    private boolean locatorBarEnabled;
     private String preGameLobbyWorldName;
     private int minPlayersToStart;
     private int preGameCountdownMinutes;
@@ -61,6 +62,7 @@ public class VanillaHungerGamesConfig {
         preGameCountdownMinutes = validatePreGameCountdownMinutes(config.getInt("pre_game_countdown.minutes", originalConfig.getInt("pre_game_countdown.minutes")));
         preGameCountdownSeconds = validatePreGameCountdownSeconds(config.getInt("pre_game_countdown.seconds", originalConfig.getInt("pre_game_countdown.seconds")));
         useVanillaItemsInChests = config.getBoolean("chests.use_vanilla_items", originalConfig.getBoolean("chests.use_vanilla_items"));
+        locatorBarEnabled = config.getBoolean("locator_bar_enabled", originalConfig.getBoolean("locator_bar_enabled"));
         customItemSpawnsInChests = config.getList("chests.custom_item_spawns", List.of()).stream().map(c -> CustomItemSpawn.fromYaml((LinkedHashMap<String, ?>) c)).filter(Objects::nonNull).toList();
     }
 
@@ -98,6 +100,10 @@ public class VanillaHungerGamesConfig {
 
     public boolean requireAdminToCreateGames() {
         return requireAdminToCreateGames;
+    }
+
+    public boolean locatorBarEnabled() {
+        return locatorBarEnabled;
     }
 
     public boolean usePreGameLobby() {
