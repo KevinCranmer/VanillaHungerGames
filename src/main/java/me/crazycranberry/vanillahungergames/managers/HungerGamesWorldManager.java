@@ -109,9 +109,9 @@ public class HungerGamesWorldManager implements Listener {
     public void onHungerGamesWorldCreateCommandExecuted(HungerGamesWorldCreateCommandExecutedEvent event) {
         WorldCreator God = new WorldCreator(HUNGER_GAMES_WORLD_NAME);
         hungerGamesWorld = God.createWorld();
-        hungerGamesWorld.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+        hungerGamesWorld.setGameRule(GameRule.ADVANCE_TIME, false);
         hungerGamesWorld.setGameRule(GameRule.LOCATOR_BAR, getPlugin().vanillaHungerGamesConfig().locatorBarEnabled());
-        hungerGamesWorld.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
+        hungerGamesWorld.setGameRule(GameRule.SHOW_ADVANCEMENT_MESSAGES, false);
         maybeGeneratePregameLobby();
         Bukkit.getPluginManager().callEvent(new HungerGamesWorldCreatedEvent());
     }
@@ -127,8 +127,8 @@ public class HungerGamesWorldManager implements Listener {
             God = new WorldCreator(getPlugin().vanillaHungerGamesConfig().preGameLobbyWorldName()).generator(new PreGameLobbyGenerator());
         }
         pregameLobby = God.createWorld();
-        pregameLobby.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
-        pregameLobby.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
+        pregameLobby.setGameRule(GameRule.ADVANCE_TIME, false);
+        pregameLobby.setGameRule(GameRule.SHOW_ADVANCEMENT_MESSAGES, false);
         pregameLobby.setDifficulty(Difficulty.PEACEFUL);
     }
 
